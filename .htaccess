@@ -1,0 +1,11 @@
+# Block direct access to files that should only ever be included by PHP, never requested directly.
+<FilesMatch "^(config\.php)$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_php7.c>
+    php_flag display_errors off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag display_errors off
+</IfModule>

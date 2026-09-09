@@ -1,0 +1,100 @@
+WENDO 2.0: CMS + PESAPAL SETUP
+==============================
+
+This is a real PHP + MySQL site, not a static page. It needs to run on your
+actual cPanel hosting. It will not work by double-clicking the files or
+opening them in a browser locally.
+
+ALREADY DEPLOYED THIS BEFORE?
+   Your live database is missing the new sizes/quantity/delivery-address
+   columns added in this update. In phpMyAdmin, open your database, go to
+   the SQL tab, and run just these four lines (safe to run once; running them
+   twice just errors with "Duplicate column", which you can ignore):
+     ALTER TABLE products ADD COLUMN sizes VARCHAR(190) NULL AFTER image_path;
+     ALTER TABLE orders ADD COLUMN size VARCHAR(20) NULL AFTER customer_phone;
+     ALTER TABLE orders ADD COLUMN quantity INT NOT NULL DEFAULT 1 AFTER size;
+     ALTER TABLE orders ADD COLUMN delivery_address TEXT NOT NULL AFTER quantity;
+   Then upload every file in this package over the old ones, including the
+   asset folder (the logo image was removed and 3 new photos were added).
+
+1) UPLOAD
+   - In cPanel > File Manager, upload every file/folder here into public_html
+     (or a subfolder, e.g. public_html/wendo2 if it should live at a path).
+
+2) DATABASE
+   - cPanel > MySQL Databases: create a database and a database user, add the
+     user to the database with ALL PRIVILEGES. Note the three full names —
+     cPanel prefixes them with your account username, e.g. "youracct_wendo".
+   - cPanel > phpMyAdmin: open the new database, go to Import, choose
+     sql/schema.sql, click Go. This creates the tables and the three merch
+     placeholders (Ambũi Tee, Heritage Hoodie, 2.0 Wristband) at KES 0.
+
+3) CONFIG
+   - Edit config.php (File Manager > Edit, or download/edit/re-upload):
+     - DB_HOST / DB_NAME / DB_USER / DB_PASS — from step 2.
+     - SITE_URL — the real https:// address this site will live at. Pesapal's
+       callback and IPN URLs are built from this, so it must be correct and
+       must be HTTPS (get an SSL cert via cPanel > SSL/TLS Status — most
+       cPanel hosts give you a free one in one click).
+     - PESAPAL_CONSUMER_KEY / PESAPAL_CONSUMER_SECRET — from your Pesapal
+       merchant account: Merchant Account > Settings > API Consumer Keys.
+       If you don't have a Pesapal merchant account yet, sign up at
+       pesapal.com — that step needs your business details and can't be done
+       on your behalf.
+     - Leave PESAPAL_ENV as 'sandbox' until you've completed a full test
+       purchase successfully. Only then switch it to 'live' and swap in your
+       live keys.
+
+4) CREATE YOUR ADMIN LOGIN
+   - Visit https://yourdomain.com/install.php in a browser, set an email and
+     password. Then delete install.php from the server (File Manager) —
+     it refuses to run again once an admin exists, but delete it anyway.
+   - Log in at /admin/login.php from now on.
+
+5) SET REAL PRICES (AND SIZES)
+   - In /admin/dashboard.php, click Edit on each product, set the real KES
+     price, optionally upload a product photo, and tick "Buyable now" once
+     you want a live Buy button to appear on the site for that item. Leave
+     it unticked and it shows as "Coming Soon" with no price, same as before.
+   - If a product comes in sizes, fill in the "Sizes" field as a plain
+     comma-separated list, e.g. "S,M,L,XL". Leave it blank for anything
+     that isn't sized (the wristband, for example) and no size picker shows
+     up for that item at checkout. Checkout now also always asks for
+     quantity and a delivery address, and the amount charged is price times
+     quantity.
+
+6) TEST BEFORE GOING LIVE
+   - With PESAPAL_ENV set to 'sandbox', do a full test purchase on the site
+     using Pesapal's sandbox test card/M-Pesa numbers (in their developer
+     docs). Confirm the order shows as COMPLETED on /admin/dashboard.php.
+   - Only after that works, switch to live keys and PESAPAL_ENV = 'live'.
+
+WHAT I COULDN'T TEST FROM HERE
+   I don't have a PHP or MySQL runtime, or your Pesapal credentials, in this
+   environment — so this code has been carefully written and reviewed but
+   not run end-to-end. The most likely first-run issues are typos in
+   config.php or the SITE_URL/callback URL not being reachable over HTTPS.
+   If something errors after upload, send me the exact message and I'll fix it.
+
+VIDEO REVIEWS
+   - In /admin/reviews.php, add a review with either an uploaded video file
+     (mp4/mov/webm, under 60MB) or a pasted link (YouTube etc. gets embedded
+     automatically; anything else shows as a "Watch video" link instead).
+   - If your videos are bigger than 60MB, either compress them first or raise
+     the limit: cPanel > MultiPHP INI Editor > set upload_max_filesize and
+     post_max_size higher for this site, then raise the 60MB check in
+     admin/review-form.php to match.
+   - Reviews only appear on the site once "Published" is ticked. The Reviews
+     section (and its nav link) simply doesn't render at all until at least
+     one review is published.
+
+THE 1.0 RECAP PAGE
+   - recap.html is the old Wendo 1.0 recap, included as-is (static, not part
+     of the CMS — there was nothing on it that needed to be editable).
+   - It's linked from the nav bar and from the "Wanjirũ — The First Flame"
+     chip in the Journey section.
+
+FILES THAT ARE STILL PLACEHOLDERS
+   - Product prices start at KES 0 — set in /admin before making anything buyable.
+   - The "Notify Me" email box on the merch section isn't wired to anything.
+   - Product photos are optional — cards work fine without one.
