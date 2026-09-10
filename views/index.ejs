@@ -557,17 +557,39 @@
     </div>
     <div class="merch-grid reveal">
       <% products.forEach(function(p) { %>
-      <div class="merch-card">
+      <div class="merch-card" id="merch-<%= p.id %>">
         <div class="merch-art">
           <% if (p.image_path) { %>
-            <img src="<%= p.image_path %>" alt="<%= p.name %>" style="width:100%;height:100%;object-fit:cover;">
+            <img id="store-art-<%= p.id %>" src="<%= p.image_path %>" alt="<%= p.name %>" style="width:100%;height:100%;object-fit:cover;">
           <% } %>
           <% if (!p.is_available) { %><span class="merch-ribbon">Coming Soon</span><% } %>
+          <% if (p.images && p.images.length > 1) { %>
+            <div style="position:absolute; bottom:8px; left:0; right:0; display:flex; justify-content:center; gap:6px; z-index:2;">
+              <% p.images.forEach(function(imgUrl, idx) { %>
+                <button type="button" aria-label="Photo <%= idx + 1 %>" onclick="document.getElementById('store-art-<%= p.id %>').src='<%= imgUrl %>'" style="width:8px; height:8px; border-radius:50%; border:1px solid #fff; background:<%= idx === 0 ? 'var(--marigold)' : 'rgba(0,0,0,0.5)' %>; cursor:pointer; padding:0;"></button>
+              <% }); %>
+            </div>
+          <% } %>
         </div>
         <div class="merch-body">
-          <span class="tag-soon"><%= p.category %></span>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.35rem;">
+            <span class="tag-soon"><%= p.category %></span>
+            <a href="/admin/dashboard.php?edit=<%= p.id %>" style="font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--muted); text-decoration:none; padding:.1rem .4rem; border:1px solid var(--line-strong);" title="Click to edit this product in CMS">
+              ✎ Edit
+            </a>
+          </div>
           <h3><%= p.name %></h3>
           <p><%= p.description %></p>
+          <% if (p.sizes && p.sizes.trim()) { %>
+            <div style="margin:.6rem 0 .2rem; display:flex; flex-wrap:wrap; gap:.3rem; align-items:center;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:.68rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em;">Sizes:</span>
+              <% p.sizes.split(',').forEach(function(sz) { %>
+                <span style="display:inline-block; padding:.12rem .38rem; background:rgba(212,175,55,.12); border:1px solid rgba(212,175,55,.3); font-family:'IBM Plex Mono',monospace; font-size:.7rem; color:var(--text); font-weight:600;">
+                  <%= sz.trim() %>
+                </span>
+              <% }); %>
+            </div>
+          <% } %>
           <% if (p.is_available) { %>
             <p class="merch-price"><%= formatPrice(p.price_kes) %></p>
             <a class="btn" href="pesapal/initiate-payment.php?product_id=<%= p.id %>">Buy Now</a>

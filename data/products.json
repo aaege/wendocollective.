@@ -1,0 +1,60 @@
+[
+  {
+    "id": 1,
+    "name": "Ambũi Tee",
+    "category": "Drop 01 · Apparel",
+    "description": "100% heavy cotton, custom screen print with the Ambũi striped motif on the back.",
+    "price_kes": 2500,
+    "is_available": 1,
+    "sizes": "S, M, L, XL, XXL",
+    "image_path": "/assets/merch-tee.jpg",
+    "images": [
+      "/assets/merch-tee.jpg",
+      "/assets/moment-2.jpg"
+    ],
+    "sort_order": 1
+  },
+  {
+    "id": 2,
+    "name": "Heritage Hoodie",
+    "category": "Drop 01 · Apparel",
+    "description": "380gsm brushed fleece in deep burgundy with gold embroidered 2.0 stamp on sleeve.",
+    "price_kes": 4500,
+    "is_available": 1,
+    "sizes": "M, L, XL, XXL",
+    "image_path": "/uploads/prod-1789016101582-Gemini_Generated_Ima.jfif",
+    "images": [
+      "/uploads/prod-1789016101582-Gemini_Generated_Ima.jfif"
+    ],
+    "sort_order": 2
+  },
+  {
+    "id": 3,
+    "name": "2.0 Wristband",
+    "category": "Drop 01 · Keepsake",
+    "description": "Woven fabric collector band with gold locking clasp. Keepsake from edition two.",
+    "price_kes": 500,
+    "is_available": 1,
+    "sizes": "One Size",
+    "image_path": "/assets/merch-wristband.jpg",
+    "images": [
+      "/assets/merch-wristband.jpg",
+      "/assets/moment-1.jpg"
+    ],
+    "sort_order": 3
+  },
+  {
+    "id": 4,
+    "name": "Ambũi Bucket Hat",
+    "category": "Drop 01 · Accessories",
+    "description": "Embroidered gold typography on washed black twill cotton with chin cord.",
+    "price_kes": 1800,
+    "is_available": 1,
+    "sizes": "S/M, L/XL",
+    "image_path": "/uploads/prod-1789016500666-Gemini_Generated_Ima.jfif",
+    "images": [
+      "/uploads/prod-1789016500666-Gemini_Generated_Ima.jfif"
+    ],
+    "sort_order": 4
+  }
+]

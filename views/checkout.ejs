@@ -180,9 +180,18 @@
       </div>
 
       <div class="item-summary">
-        <% if (product.image_path) { %>
-          <img class="item-img" src="<%= product.image_path %>" alt="<%= product.name %>">
-        <% } %>
+        <div>
+          <% if (product.image_path) { %>
+            <img id="checkoutCoverImg" class="item-img" src="<%= product.image_path %>" alt="<%= product.name %>">
+          <% } %>
+          <% if (product.images && product.images.length > 1) { %>
+            <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; max-width:140px;">
+              <% product.images.forEach(function(imgUrl, idx) { %>
+                <img src="<%= imgUrl %>" alt="Thumbnail" class="checkout-thumb-item" style="width:30px; height:30px; object-fit:cover; cursor:pointer; border:1px solid <%= idx === 0 ? 'var(--marigold)' : 'var(--line)' %>; border-radius:2px;" onclick="document.getElementById('checkoutCoverImg').src = '<%= imgUrl %>'; document.querySelectorAll('.checkout-thumb-item').forEach(el => el.style.borderColor = 'var(--line)'); this.style.borderColor = 'var(--marigold)';">
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
         <div class="item-details">
           <span class="item-cat"><%= product.category %></span>
           <h3><%= product.name %></h3>

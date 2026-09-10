@@ -3,192 +3,1505 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wendo CMS: Dashboard</title>
+  <title>Wendo CMS: Products &amp; Storefront</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
 
     :root {
-      --bg: #1A0505;
-      --surface: #2A0A0A;
-      --surface-2: #3A0E0E;
+      --bg: #140303;
+      --surface: #220808;
+      --surface-2: #2E0B0B;
+      --surface-3: #3B1010;
       --text: #FAF3BA;
       --muted: #D9A8A0;
       --burgundy: #FF3B3B;
+      --burgundy-strong: #9E0000;
       --marigold: #F8DF01;
-      --line: rgba(250,243,186,.2);
+      --marigold-hover: #e5cd00;
+      --line: rgba(250,243,186,.18);
+      --line-strong: rgba(250,243,186,.35);
+      --green: #2ea44f;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background: var(--bg);
       color: var(--text);
       font-family: 'Schibsted Grotesk', system-ui, sans-serif;
       line-height: 1.5;
+      min-height: 100vh;
     }
     .mono { font-family: 'IBM Plex Mono', monospace; }
-    h1, h2, h3 { font-family: 'Luckiest Guy', sans-serif; font-weight: 400; }
+    h1, h2, h3 { font-family: 'Luckiest Guy', sans-serif; font-weight: 400; letter-spacing: .02em; }
+
     .site-nav {
       background: var(--surface);
-      padding: 1rem 2rem;
+      padding: .9rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-    .nav-brand { font-family: 'IBM Plex Mono', monospace; color: var(--marigold); }
-    .wrap { max-width: 1080px; margin: 2rem auto; padding: 0 1.5rem; }
+    .nav-brand {
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--marigold);
+      font-weight: 700;
+      font-size: .95rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+    .nav-links a {
+      color: #FAF3BA;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .8rem;
+      text-decoration: none;
+      margin-left: 1.4rem;
+      transition: color .15s;
+    }
+    .nav-links a:hover { color: var(--marigold); }
+
+    .wrap {
+      max-width: 1140px;
+      margin: 2rem auto 4rem;
+      padding: 0 1.25rem;
+    }
+
+    /* Flash alerts */
+    .alert-banner {
+      background: rgba(46, 164, 79, 0.2);
+      border: 1px solid var(--green);
+      color: #92e6a3;
+      padding: .85rem 1.25rem;
+      margin-bottom: 1.5rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Products & Inventory Card (Target selector: div:nth-of-type(1) > div:nth-of-type(1)) */
     .card {
       background: var(--surface);
       border: 1px solid var(--line);
+      box-shadow: 0 16px 36px rgba(0,0,0,.45);
       padding: 1.75rem;
-      margin-bottom: 2rem;
+      margin-bottom: 2.25rem;
     }
-    .card h2 { color: var(--marigold); margin-bottom: 1.2rem; font-size: 1.8rem; }
-    table { width: 100%; border-collapse: collapse; margin-top: .5rem; }
-    th, td {
-      padding: .85rem 1rem;
-      text-align: left;
+
+    .card-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
       border-bottom: 1px solid var(--line);
-      font-size: .9rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .card-title-group h2 {
+      color: var(--marigold);
+      font-size: 1.95rem;
+      margin-bottom: .3rem;
+    }
+    .card-title-group p {
+      color: var(--muted);
+      font-size: .88rem;
+    }
+    .card-count-badge {
+      display: inline-block;
+      margin-left: .5rem;
+      padding: .2rem .55rem;
+      background: rgba(248, 223, 1, 0.15);
+      color: var(--marigold);
+      border: 1px solid rgba(248, 223, 1, 0.3);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .75rem;
+      vertical-align: middle;
+      font-weight: 600;
+    }
+
+    /* Buttons */
+    .btn-add-product {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .75rem 1.4rem;
+      background: var(--marigold);
+      color: #241209;
+      border: 2px solid var(--marigold);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      cursor: pointer;
+      transition: all .2s ease;
+      box-shadow: 0 4px 12px rgba(248, 223, 1, 0.2);
+    }
+    .btn-add-product:hover {
+      background: var(--marigold-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(248, 223, 1, 0.35);
+    }
+
+    /* Table styling */
+    .table-container {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
     }
     th {
+      background: rgba(0,0,0,.35);
+      padding: .9rem 1rem;
       font-family: 'IBM Plex Mono', monospace;
       font-size: .75rem;
       text-transform: uppercase;
       letter-spacing: .08em;
       color: var(--muted);
+      border-bottom: 2px solid var(--line);
+    }
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--line);
+      font-size: .9rem;
+      vertical-align: middle;
+    }
+
+    /* Clickable product row */
+    tr.product-row {
+      cursor: pointer;
+      transition: background-color .15s ease;
+    }
+    tr.product-row:hover {
+      background: rgba(248, 223, 1, 0.06);
+    }
+    tr.product-row:hover td.col-name strong {
+      color: var(--marigold);
+    }
+
+    .prod-thumb {
+      width: 54px;
+      height: 54px;
+      object-fit: cover;
+      border: 1px solid var(--line);
+      background: #000;
+      display: block;
+    }
+    .col-name strong {
+      display: block;
+      font-size: 1rem;
+      color: var(--text);
+      transition: color .15s;
+    }
+    .col-name .prod-desc-snippet {
+      font-size: .78rem;
+      color: var(--muted);
+      max-width: 260px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: .2rem;
+    }
+    .size-pill {
+      display: inline-block;
+      padding: .2rem .45rem;
+      background: rgba(250, 243, 186, 0.1);
+      border: 1px solid rgba(250, 243, 186, 0.2);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .72rem;
+      color: var(--text);
+      margin: .1rem .2rem .1rem 0;
+      white-space: nowrap;
     }
     .badge {
       display: inline-block;
-      padding: .25rem .6rem;
+      padding: .3rem .65rem;
       font-family: 'IBM Plex Mono', monospace;
-      font-size: .7rem;
+      font-size: .72rem;
       text-transform: uppercase;
-      border-radius: 3px;
+      letter-spacing: .04em;
+      font-weight: 600;
     }
-    .badge-green { background: #1a7f37; color: #fff; }
-    .badge-gray { background: #57606a; color: #fff; }
-    .btn-sm {
-      padding: .4rem .8rem;
-      background: var(--marigold);
-      color: #241209;
-      border: none;
+    .badge-green {
+      background: rgba(46, 164, 79, 0.25);
+      color: #92e6a3;
+      border: 1px solid rgba(46, 164, 79, 0.5);
+    }
+    .badge-gray {
+      background: rgba(217, 168, 160, 0.15);
+      color: var(--muted);
+      border: 1px solid rgba(217, 168, 160, 0.3);
+    }
+
+    /* Actions */
+    .actions-cluster {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .btn-action {
+      padding: .45rem .75rem;
       font-family: 'IBM Plex Mono', monospace;
       font-size: .75rem;
       font-weight: 700;
-      text-decoration: none;
+      border: 1px solid transparent;
       cursor: pointer;
-      display: inline-block;
+      text-decoration: none;
+      transition: all .15s ease;
+      white-space: nowrap;
+    }
+    .btn-edit {
+      background: var(--marigold);
+      color: #241209;
+      border-color: var(--marigold);
+    }
+    .btn-edit:hover {
+      background: var(--marigold-hover);
+    }
+    .btn-toggle {
+      background: rgba(250,243,186,.1);
+      color: var(--text);
+      border-color: var(--line);
+    }
+    .btn-toggle:hover {
+      background: rgba(250,243,186,.2);
+    }
+    .btn-delete {
+      background: rgba(255, 59, 59, 0.15);
+      color: #ff9b9b;
+      border-color: rgba(255, 59, 59, 0.3);
+    }
+    .btn-delete:hover {
+      background: #ff3b3b;
+      color: #fff;
+    }
+
+    /* MODAL DIALOG */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+    .modal-backdrop.open {
+      display: flex;
+    }
+    /* Targeted Focus Mode Selector & Base Modal Card */
+    div#productModal:nth-of-type(2) > div:nth-of-type(1),
+    .modal-card {
+      background: #180404;
+      border: 1px solid rgba(250, 243, 186, 0.22);
+      border-radius: 12px;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.88);
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 1.75rem 2rem;
+      position: relative;
+      animation: modalEnter .2s ease-out;
+    }
+    @keyframes modalEnter {
+      from { opacity: 0; transform: scale(.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 1rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .modal-head h3 {
+      font-size: 1.6rem;
+      color: var(--marigold);
+      margin-bottom: .25rem;
+    }
+    .modal-subtitle {
+      font-size: .8rem;
+      color: var(--muted);
+      margin: 0;
+      font-family: 'Schibsted Grotesk', sans-serif;
+    }
+    .btn-close {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 1.3rem;
+      line-height: 1;
+      padding: .35rem .65rem;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: color .15s, border-color .15s, background .15s;
+    }
+    .btn-close:hover { color: #fff; border-color: #fff; background: rgba(255,255,255,0.06); }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    .form-group label {
+      display: block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--text);
+      font-weight: 600;
+      margin-bottom: .45rem;
+    }
+    .form-group .hint {
+      font-size: .78rem;
+      color: var(--muted);
+      margin-top: .25rem;
+    }
+    .form-control {
+      width: 100%;
+      padding: .75rem 1rem;
+      background: var(--surface-2);
+      border: 1px solid var(--line-strong);
+      color: var(--text);
+      font-family: inherit;
+      font-size: .95rem;
+    }
+    .form-control:focus {
+      outline: 2px solid var(--marigold);
+      background: var(--surface-3);
+    }
+
+    /* Size Picker Component */
+    .size-picker-box {
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      padding: 1rem;
+      margin-bottom: .5rem;
+    }
+    .size-chips-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-bottom: .85rem;
+    }
+    .chip-size {
+      padding: .5rem .85rem;
+      background: rgba(250, 243, 186, 0.08);
+      border: 1px solid var(--line-strong);
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .85rem;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      transition: all .15s ease;
+    }
+    .chip-size:hover {
+      background: rgba(248, 223, 1, 0.18);
+      border-color: var(--marigold);
+    }
+    .chip-size.active {
+      background: var(--marigold);
+      color: #241209;
+      border-color: var(--marigold);
+      font-weight: 700;
+      transform: scale(1.03);
+    }
+    .size-presets {
+      display: flex;
+      gap: .4rem;
+      margin-bottom: .6rem;
+      flex-wrap: wrap;
+    }
+    .btn-preset {
+      padding: .2rem .5rem;
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .7rem;
+      cursor: pointer;
+    }
+    .btn-preset:hover {
+      color: var(--marigold);
+      border-color: var(--marigold);
+    }
+
+    /* Category presets */
+    .cat-presets {
+      display: flex;
+      gap: .35rem;
+      flex-wrap: wrap;
+      margin-top: .4rem;
+    }
+    .btn-cat-preset {
+      padding: .2rem .5rem;
+      background: rgba(250, 243, 186, 0.06);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .72rem;
+      cursor: pointer;
+    }
+    .btn-cat-preset:hover {
+      color: var(--marigold);
+      border-color: var(--marigold);
+    }
+
+    /* Image Gallery & Main Photo Arrangement */
+    .gallery-manager-box {
+      background: #110202;
+      border: 1px solid rgba(250, 243, 186, 0.16);
+      border-radius: 8px;
+      padding: 1.1rem;
+      transition: border-color .15s ease, background .15s ease;
+    }
+    .gallery-manager-box.drag-active {
+      border-color: var(--marigold);
+      background: rgba(248, 223, 1, 0.06);
+    }
+    .gallery-notice {
+      display: flex;
+      align-items: flex-start;
+      gap: .6rem;
+      background: rgba(248, 223, 1, 0.08);
+      border: 1px solid rgba(248, 223, 1, 0.25);
+      padding: .65rem .85rem;
+      border-radius: 6px;
+      margin-bottom: .85rem;
+      font-size: .78rem;
+      color: var(--text);
+      line-height: 1.4;
+    }
+    .gallery-notice strong {
+      color: var(--marigold);
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: .75rem;
+      margin-bottom: .85rem;
+    }
+    .gallery-card {
+      background: #1d0606;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .gallery-card.is-main {
+      border: 2px solid var(--marigold);
+      box-shadow: 0 0 16px rgba(248, 223, 1, 0.25);
+      background: #250909;
+    }
+    .badge-main-cover {
+      display: block;
+      width: 100%;
+      background: var(--marigold);
+      color: #241209;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .65rem;
+      font-weight: 700;
+      text-align: center;
+      padding: .2rem 0;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .badge-pos {
+      display: block;
+      width: 100%;
+      background: rgba(250, 243, 186, 0.08);
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .65rem;
+      font-weight: 600;
+      text-align: center;
+      padding: .2rem 0;
+    }
+    .gallery-img-wrap {
+      width: 100%;
+      height: 100px;
+      background: #000;
+      overflow: hidden;
+      position: relative;
+    }
+    .gallery-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .gallery-actions {
+      display: flex;
+      gap: 3px;
+      padding: 4px;
+      background: rgba(0, 0, 0, 0.55);
+      border-top: 1px solid var(--line);
+      align-items: center;
+      justify-content: space-between;
+    }
+    .btn-set-main {
+      flex: 1;
+      padding: .25rem .3rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .65rem;
+      background: rgba(248, 223, 1, 0.12);
+      border: 1px solid var(--marigold);
+      color: var(--marigold);
+      cursor: pointer;
+      border-radius: 3px;
+      font-weight: 600;
+      white-space: nowrap;
+      text-align: center;
+      transition: all .15s ease;
+    }
+    .btn-set-main:hover {
+      background: var(--marigold);
+      color: #241209;
+    }
+    .btn-order-arrow {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(250, 243, 186, 0.08);
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-size: .7rem;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: background .15s;
+    }
+    .btn-order-arrow:hover:not(:disabled) {
+      background: var(--line-strong);
+      color: #fff;
+    }
+    .btn-order-arrow:disabled {
+      opacity: .25;
+      cursor: not-allowed;
+    }
+    .btn-del-img {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 82, 82, 0.15);
+      border: 1px solid rgba(255, 82, 82, 0.35);
+      color: #ff8888;
+      font-size: .75rem;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: all .15s ease;
+    }
+    .btn-del-img:hover {
+      background: #ff5252;
+      color: #fff;
+      border-color: #ff5252;
+    }
+    .toolbar-buttons {
+      display: flex;
+      gap: .6rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .btn-tool {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .45rem .85rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .75rem;
+      font-weight: 600;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all .15s ease;
+    }
+    .btn-tool-upload {
+      background: rgba(248, 223, 1, 0.12);
+      border: 1px solid var(--marigold);
+      color: var(--marigold);
+    }
+    .btn-tool-upload:hover {
+      background: var(--marigold);
+      color: #241209;
+    }
+    .btn-tool-gallery {
+      background: rgba(250, 243, 186, 0.06);
+      border: 1px solid var(--line);
+      color: var(--text);
+    }
+    .btn-tool-gallery:hover {
+      border-color: var(--marigold);
+      color: var(--marigold);
+    }
+    .asset-presets-tray {
+      display: flex;
+      gap: .45rem;
+      flex-wrap: wrap;
+      padding: .65rem;
+      background: #0b0101;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      margin-top: .6rem;
+    }
+    .preset-pill-card {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .25rem .55rem;
+      background: rgba(250, 243, 186, 0.05);
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .72rem;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all .15s ease;
+    }
+    .preset-pill-card:hover {
+      border-color: var(--marigold);
+      background: rgba(248, 223, 1, 0.12);
+      color: var(--marigold);
+    }
+    .preset-pill-card img {
+      width: 24px;
+      height: 24px;
+      border-radius: 3px;
+      object-fit: cover;
+    }
+    .upload-status-indicator {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .75rem;
+      color: var(--marigold);
+      margin-left: .4rem;
+    }
+
+    /* Availability Toggle Box */
+    .avail-box {
+      background: var(--surface-2);
+      border: 1px solid var(--line-strong);
+      border-radius: 6px;
+      padding: .65rem .85rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      cursor: pointer;
+      user-select: none;
+      transition: all .15s ease;
+    }
+    .avail-box:hover {
+      border-color: var(--marigold);
+    }
+    .avail-box.active {
+      border-color: rgba(34, 197, 94, 0.4);
+      background: rgba(34, 197, 94, 0.08);
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: .8rem;
+      margin-top: 2rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--line);
+    }
+    .btn-cancel {
+      padding: .85rem 1.5rem;
+      background: transparent;
+      border: 1px solid var(--line-strong);
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .85rem;
+      cursor: pointer;
+    }
+    .btn-cancel:hover { background: rgba(250,243,186,.1); }
+    .btn-save {
+      padding: .85rem 2rem;
+      background: var(--marigold);
+      color: #241209;
+      border: 2px solid var(--marigold);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(248, 223, 1, 0.25);
+    }
+    .btn-save:hover {
+      background: var(--marigold-hover);
+    }
+
+    @media (max-width: 760px) {
+      .form-row { grid-template-columns: 1fr; }
+      .image-upload-wrap { grid-template-columns: 1fr; }
+      .preview-box { width: 100%; height: 160px; }
+      .site-nav { padding: .8rem 1rem; }
+      .wrap { padding: 0 .75rem; }
     }
   </style>
 </head>
 <body>
   <nav class="site-nav">
-    <span class="nav-brand">WENDO 2.0 · CMS DASHBOARD</span>
-    <div>
-      <a href="/" style="color: #FAF3BA; font-family: monospace; font-size: .8rem; text-decoration: none; margin-right: 1.5rem;">View Public Site →</a>
-      <a href="/install.php" style="color: var(--marigold); font-family: monospace; font-size: .8rem; text-decoration: none;">Install Info</a>
+    <span class="nav-brand">
+      <span style="display:inline-block; width:10px; height:10px; background:var(--marigold); border-radius:50%;"></span>
+      Wendo 2.0 · CMS Manager
+    </span>
+    <div class="nav-links">
+      <a href="/" target="_blank">View Public Site ↗</a>
+      <a href="/install.php">System Info</a>
     </div>
   </nav>
 
   <div class="wrap">
-    <div class="card">
-      <h2>Products &amp; Inventory</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Price (KES)</th>
-            <th>Sizes</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% products.forEach(function(p) { %>
-          <tr>
-            <td class="mono">#<%= p.id %></td>
-            <td><strong><%= p.name %></strong></td>
-            <td class="mono"><%= p.category %></td>
-            <td class="mono"><%= formatPrice(p.price_kes) %></td>
-            <td class="mono"><%= p.sizes || '—' %></td>
-            <td>
-              <% if (p.is_available) { %>
-                <span class="badge badge-green">Buyable Now</span>
-              <% } else { %>
-                <span class="badge badge-gray">Coming Soon</span>
-              <% } %>
-            </td>
-            <td>
-              <form action="/admin/toggle-product" method="POST" style="display:inline;">
-                <input type="hidden" name="id" value="<%= p.id %>">
-                <button type="submit" class="btn-sm"><%= p.is_available ? 'Make Coming Soon' : 'Make Buyable' %></button>
-              </form>
-            </td>
-          </tr>
-          <% }); %>
-        </tbody>
-      </table>
-    </div>
+    <% if (saved) { %>
+      <div class="alert-banner" id="alert-banner">
+        <span>✓ Product catalog updated successfully. Changes are live on the storefront!</span>
+        <button type="button" onclick="document.getElementById('alert-banner').remove()" style="background:none;border:none;color:#92e6a3;font-size:1.2rem;cursor:pointer;">✕</button>
+      </div>
+    <% } %>
 
-    <div class="card">
-      <h2>Recent Orders (Pesapal)</h2>
-      <% if (orders && orders.length > 0) { %>
+    <% if (deleted) { %>
+      <div class="alert-banner" id="alert-banner" style="border-color:#ff5252; color:#ff9999; background:rgba(255,82,82,.15);">
+        <span>✓ Product was permanently removed from catalog.</span>
+        <button type="button" onclick="document.getElementById('alert-banner').remove()" style="background:none;border:none;color:#ff9999;font-size:1.2rem;cursor:pointer;">✕</button>
+      </div>
+    <% } %>
+
+    <!-- Products & Inventory Card (Target selector: div:nth-of-type(1) > div:nth-of-type(1)) -->
+    <div class="card" id="products-card">
+      <div class="card-header-bar">
+        <div class="card-title-group">
+          <h2>Products &amp; Inventory <span class="card-count-badge"><%= products.length %> items</span></h2>
+          <p>Click any product row or click Edit to update items, upload product photos, and configure sizes for Pesapal checkout.</p>
+        </div>
+        <button type="button" class="btn-add-product" onclick="openAddModal()">
+          <span>＋</span> Add New Product
+        </button>
+      </div>
+
+      <div class="table-container">
         <table>
           <thead>
             <tr>
-              <th>Order ID</th>
-              <th>Customer</th>
-              <th>Item</th>
-              <th>Qty</th>
-              <th>Total</th>
+              <th style="width: 70px;">Photo</th>
+              <th>Item &amp; Description</th>
+              <th>Category</th>
+              <th>Price (KES)</th>
+              <th>Configured Sizes</th>
               <th>Status</th>
-              <th>Date</th>
+              <th style="text-align: right; width: 180px;">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <% orders.forEach(function(o) { %>
-            <tr>
-              <td class="mono"><%= o.order_id %></td>
-              <td><%= o.customer_name %><br><span style="font-size: .8rem; color: var(--muted);"><%= o.customer_phone %></span></td>
-              <td><%= o.product_name %> (<%= o.size %>)</td>
-              <td class="mono"><%= o.quantity %></td>
-              <td class="mono"><%= formatPrice(o.amount_kes) %></td>
-              <td><span class="badge badge-green"><%= o.payment_status %></span></td>
-              <td class="mono" style="font-size: .8rem;"><%= new Date(o.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %></td>
+            <% products.forEach(function(p) { %>
+            <tr class="product-row" id="row-prod-<%= p.id %>" onclick="handleRowClick(event, <%= p.id %>)">
+              <td>
+                <img class="prod-thumb" src="<%= p.image_path || '/assets/merch-tee.jpg' %>" alt="<%= p.name %>" onerror="this.src='/assets/merch-tee.jpg'">
+              </td>
+              <td class="col-name">
+                <strong><%= p.name %></strong>
+                <div class="prod-desc-snippet"><%= p.description || 'No description provided' %></div>
+              </td>
+              <td class="mono" style="font-size: .8rem; color: var(--marigold);"><%= p.category %></td>
+              <td class="mono" style="font-weight: 700; color: var(--text);"><%= formatPrice(p.price_kes) %></td>
+              <td>
+                <% if (p.sizes && p.sizes.trim()) { %>
+                  <% p.sizes.split(',').forEach(function(s) { %>
+                    <span class="size-pill"><%= s.trim() %></span>
+                  <% }); %>
+                <% } else { %>
+                  <span class="size-pill" style="opacity:.6;">One Size</span>
+                <% } %>
+              </td>
+              <td>
+                <% if (p.is_available) { %>
+                  <span class="badge badge-green">Buyable Now</span>
+                <% } else { %>
+                  <span class="badge badge-gray">Coming Soon</span>
+                <% } %>
+              </td>
+              <td style="text-align: right;">
+                <div class="actions-cluster" style="justify-content: flex-end;" onclick="event.stopPropagation()">
+                  <button type="button" class="btn-action btn-edit" onclick="openEditModal(<%= p.id %>)">✎ Edit</button>
+                  <form action="/admin/toggle-product" method="POST" style="display:inline;">
+                    <input type="hidden" name="id" value="<%= p.id %>">
+                    <button type="submit" class="btn-action btn-toggle" title="Toggle visibility on storefront">
+                      <%= p.is_available ? 'Hide' : 'Show' %>
+                    </button>
+                  </form>
+                  <form action="/admin/products/delete" method="POST" style="display:inline;" onsubmit="return confirm('Permanently delete <%= p.name %>?');">
+                    <input type="hidden" name="id" value="<%= p.id %>">
+                    <button type="submit" class="btn-action btn-delete" title="Delete product">🗑</button>
+                  </form>
+                </div>
+              </td>
             </tr>
             <% }); %>
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- Recent Orders Card -->
+    <div class="card">
+      <h2 style="color: var(--marigold); margin-bottom: 1.2rem; font-size: 1.7rem;">Recent Store Orders (Pesapal)</h2>
+      <% if (orders && orders.length > 0) { %>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Order Ref</th>
+                <th>Customer</th>
+                <th>Purchased Item</th>
+                <th>Qty</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% orders.forEach(function(o) { %>
+              <tr>
+                <td class="mono">#<%= o.order_id %></td>
+                <td>
+                  <strong><%= o.customer_name %></strong><br>
+                  <span class="mono" style="font-size: .8rem; color: var(--muted);"><%= o.customer_phone %></span>
+                </td>
+                <td><%= o.product_name %> <span class="size-pill"><%= o.size %></span></td>
+                <td class="mono"><%= o.quantity %></td>
+                <td class="mono" style="font-weight: 700; color: var(--marigold);"><%= formatPrice(o.amount_kes) %></td>
+                <td><span class="badge badge-green"><%= o.payment_status %></span></td>
+                <td class="mono" style="font-size: .8rem;"><%= new Date(o.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %></td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
       <% } else { %>
-        <p style="color: var(--muted); font-size: .95rem;">No orders placed yet. Products purchased on the store will display here.</p>
+        <p style="color: var(--muted); font-size: .95rem;">No orders placed yet. Orders purchased on the storefront will show up here live.</p>
       <% } %>
     </div>
 
+    <!-- Video Reviews Card -->
     <div class="card">
-      <h2>Video Reviews</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Reviewer</th>
-            <th>Caption</th>
-            <th>Video Source</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% reviews.forEach(function(r) { %>
-          <tr>
-            <td><strong><%= r.reviewer_name %></strong></td>
-            <td><%= r.caption || '—' %></td>
-            <td class="mono" style="font-size: .8rem;"><%= r.video_url || r.video_path %></td>
-            <td><span class="badge badge-green">Published</span></td>
-          </tr>
-          <% }); %>
-        </tbody>
-      </table>
+      <h2 style="color: var(--marigold); margin-bottom: 1.2rem; font-size: 1.7rem;">Published Video Reviews</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Reviewer</th>
+              <th>Caption</th>
+              <th>Video Embed URL</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% reviews.forEach(function(r) { %>
+            <tr>
+              <td><strong><%= r.reviewer_name %></strong></td>
+              <td><%= r.caption || '—' %></td>
+              <td class="mono" style="font-size: .8rem;"><%= r.video_url || r.video_path %></td>
+              <td><span class="badge badge-green">Published</span></td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
+
+  <!-- PRODUCT EDIT / ADD MODAL -->
+  <div class="modal-backdrop" id="productModal" onclick="handleBackdropClick(event)">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <h3 id="modalTitle">Edit Product</h3>
+          <p class="modal-subtitle">Configure product pricing, arrange photos (1st is main cover), and select checkout sizes.</p>
+        </div>
+        <button type="button" class="btn-close" onclick="closeModal()" title="Close (Esc)">✕</button>
+      </div>
+
+      <form id="productForm" action="/admin/products/save" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="id" id="modal_id" value="">
+        <input type="hidden" name="existing_images" id="modal_existing_images" value="[]">
+
+        <!-- Essential Details: Name & Price -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="modal_name">Product Name *</label>
+            <input type="text" class="form-control" name="name" id="modal_name" placeholder="e.g. Ambũi Embroidered Cap" required>
+          </div>
+          <div class="form-group">
+            <label for="modal_price">Price in KES *</label>
+            <input type="number" class="form-control mono" name="price_kes" id="modal_price" placeholder="2500" min="0" step="50" required>
+          </div>
+        </div>
+
+        <!-- Category & Availability -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="modal_category">Category *</label>
+            <input type="text" class="form-control" name="category" id="modal_category" placeholder="Drop 01 · Apparel" required>
+            <div class="cat-presets">
+              <button type="button" class="btn-cat-preset" onclick="setCategory('Drop 01 · Apparel')">Apparel</button>
+              <button type="button" class="btn-cat-preset" onclick="setCategory('Drop 01 · Keepsake')">Keepsake</button>
+              <button type="button" class="btn-cat-preset" onclick="setCategory('Drop 01 · Accessories')">Accessories</button>
+              <button type="button" class="btn-cat-preset" onclick="setCategory('Limited Edition')">Limited</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Storefront Status</label>
+            <div class="avail-box" id="availToggleBox" onclick="toggleStoreAvailability()">
+              <input type="checkbox" name="is_available" id="modal_is_available" value="1" style="display:none;">
+              <span id="availIndicator" style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#22c55e;"></span>
+              <div>
+                <strong id="availTitle" style="display:block;font-size:.85rem;color:var(--text);">Buyable Immediately</strong>
+                <span id="availSubtitle" style="font-size:.72rem;color:var(--muted);">Displayed with live Pesapal checkout</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRODUCT IMAGES (ARRANGE 1ST AS MAIN COVER & DELETE) -->
+        <div class="form-group">
+          <label style="display:flex; justify-content:space-between; align-items:center;">
+            <span>Product Photos &amp; Cover Selection</span>
+            <span id="photoCountNotice" style="font-size:.72rem; color:var(--muted); font-weight:normal; text-transform:none;"></span>
+          </label>
+
+          <div class="gallery-manager-box" id="galleryDropZone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+            <div class="gallery-notice">
+              <span style="color:var(--marigold); font-size:1.1rem; line-height:1;">★</span>
+              <div>
+                <strong>Main Image Rule:</strong> The photo arranged <strong>first (1st)</strong> is your product’s primary cover on the storefront &amp; Pesapal checkout. Click <strong>"★ Make Main"</strong> or use <strong>◀</strong> to arrange any photo first. Click <strong>✕</strong> to delete photos.
+              </div>
+            </div>
+
+            <!-- Dynamic Image Grid -->
+            <div class="gallery-grid" id="productImageGallery">
+              <!-- Dynamically populated via renderImageGallery() -->
+            </div>
+
+            <!-- Add / Upload Toolbar -->
+            <div class="toolbar-buttons">
+              <input type="file" id="modal_file_upload" accept="image/*" multiple style="display:none;" onchange="handleFileUpload(event)">
+              <button type="button" class="btn-tool btn-tool-upload" onclick="document.getElementById('modal_file_upload').click()">
+                <span>＋</span> Upload Photo(s)
+              </button>
+              <button type="button" class="btn-tool btn-tool-gallery" onclick="togglePresetsTray()">
+                <span>🖼</span> Add from Festival Gallery
+              </button>
+              <span id="uploadStatusText" class="upload-status-indicator"></span>
+            </div>
+
+            <!-- Festival Gallery Presets Tray -->
+            <div class="asset-presets-tray" id="presetsTray" style="display:none;">
+              <span style="width:100%;font-family:monospace;font-size:.7rem;color:var(--muted);margin-bottom:.2rem;">
+                Click any asset to attach it to this product:
+              </span>
+              <button type="button" class="preset-pill-card" onclick="addPresetImage('/assets/merch-tee.jpg', 'Ambũi Tee')">
+                <img src="/assets/merch-tee.jpg" alt="Tee">
+                <span>Ambũi Tee</span>
+              </button>
+              <button type="button" class="preset-pill-card" onclick="addPresetImage('/assets/merch-hoodie.jpg', 'Heritage Hoodie')">
+                <img src="/assets/merch-hoodie.jpg" alt="Hoodie">
+                <span>Heritage Hoodie</span>
+              </button>
+              <button type="button" class="preset-pill-card" onclick="addPresetImage('/assets/merch-wristband.jpg', '2.0 Wristband')">
+                <img src="/assets/merch-wristband.jpg" alt="Wristband">
+                <span>2.0 Wristband</span>
+              </button>
+              <button type="button" class="preset-pill-card" onclick="addPresetImage('/assets/moment-2.jpg', 'Fashion Coat')">
+                <img src="/assets/moment-2.jpg" alt="Coat">
+                <span>Fashion Coat</span>
+              </button>
+              <button type="button" class="preset-pill-card" onclick="addPresetImage('/assets/moment-1.jpg', 'Festival Crowd')">
+                <img src="/assets/moment-1.jpg" alt="Crowd">
+                <span>Festival Crowd</span>
+              </button>
+              <button type="button" class="preset-pill-card" onclick="addPresetImage('/assets/moment-4-stage.jpg', 'Stage Night')">
+                <img src="/assets/moment-4-stage.jpg" alt="Stage">
+                <span>Stage Night</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SIZES PICKER -->
+        <div class="form-group">
+          <label>Pick Available Sizes</label>
+          <div class="size-picker-box">
+            <div class="size-presets">
+              <span style="font-family:monospace;font-size:.7rem;color:var(--muted);margin-right:.4rem;">Quick Presets:</span>
+              <button type="button" class="btn-preset" onclick="applyPresetSizes(['S', 'M', 'L', 'XL', 'XXL'])">Apparel (S-XXL)</button>
+              <button type="button" class="btn-preset" onclick="applyPresetSizes(['M', 'L', 'XL'])">Standard (M-XL)</button>
+              <button type="button" class="btn-preset" onclick="applyPresetSizes(['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'])">Extended (XS-3XL)</button>
+              <button type="button" class="btn-preset" onclick="applyPresetSizes(['One Size'])">One Size</button>
+              <button type="button" class="btn-preset" onclick="applyPresetSizes([])">Clear All</button>
+            </div>
+
+            <div class="size-chips-grid" id="sizeChipsContainer">
+              <div class="chip-size" data-size="XS" onclick="toggleSize('XS')">XS</div>
+              <div class="chip-size" data-size="S" onclick="toggleSize('S')">S</div>
+              <div class="chip-size" data-size="M" onclick="toggleSize('M')">M</div>
+              <div class="chip-size" data-size="L" onclick="toggleSize('L')">L</div>
+              <div class="chip-size" data-size="XL" onclick="toggleSize('XL')">XL</div>
+              <div class="chip-size" data-size="XXL" onclick="toggleSize('XXL')">XXL</div>
+              <div class="chip-size" data-size="2XL" onclick="toggleSize('2XL')">2XL</div>
+              <div class="chip-size" data-size="3XL" onclick="toggleSize('3XL')">3XL</div>
+              <div class="chip-size" data-size="One Size" onclick="toggleSize('One Size')">One Size</div>
+            </div>
+
+            <input type="text" class="form-control mono" name="sizes" id="modal_sizes" placeholder="e.g. S, M, L, XL, XXL" oninput="syncChipsFromInput()">
+          </div>
+          <p class="hint">Customers will select from these sizes during the Pesapal order checkout.</p>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label for="modal_description">Description / Craft Specifications</label>
+          <textarea class="form-control" name="description" id="modal_description" rows="2" placeholder="Fabric composition, weight, print details..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="btn-save" id="btnSaveModal">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Inlined product database for instant interactive modal opening
+    const productsData = <%- JSON.stringify(products) %>;
+    const initialEditId = '<%= editId %>';
+
+    let currentSelectedSizes = [];
+    let currentImages = [];
+
+    function handleRowClick(event, prodId) {
+      openEditModal(prodId);
+    }
+
+    function setCategory(cat) {
+      document.getElementById('modal_category').value = cat;
+    }
+
+    function toggleStoreAvailability(forcedVal) {
+      const chk = document.getElementById('modal_is_available');
+      const box = document.getElementById('availToggleBox');
+      const dot = document.getElementById('availIndicator');
+      const title = document.getElementById('availTitle');
+      const subtitle = document.getElementById('availSubtitle');
+
+      if (typeof forcedVal === 'boolean') {
+        chk.checked = forcedVal;
+      } else {
+        chk.checked = !chk.checked;
+      }
+
+      if (chk.checked) {
+        box.classList.add('active');
+        dot.style.background = '#22c55e';
+        title.textContent = 'Buyable Immediately';
+        title.style.color = '#92e6a3';
+        subtitle.textContent = 'Active on storefront with Pesapal checkout';
+      } else {
+        box.classList.remove('active');
+        dot.style.background = '#888888';
+        title.textContent = 'Marked as Coming Soon';
+        title.style.color = 'var(--muted)';
+        subtitle.textContent = 'Preview only on storefront (checkout disabled)';
+      }
+    }
+
+    function togglePresetsTray() {
+      const tray = document.getElementById('presetsTray');
+      tray.style.display = (tray.style.display === 'none' || !tray.style.display) ? 'flex' : 'none';
+    }
+
+    // GALLERY IMAGE MANAGEMENT (ARRANGE 1ST AS MAIN, REORDER, DELETE)
+    function renderImageGallery() {
+      const container = document.getElementById('productImageGallery');
+      const countNotice = document.getElementById('photoCountNotice');
+      container.innerHTML = '';
+
+      if (currentImages.length === 0) {
+        currentImages = ['/assets/merch-tee.jpg'];
+      }
+
+      countNotice.textContent = `${currentImages.length} photo${currentImages.length === 1 ? '' : 's'} attached`;
+
+      currentImages.forEach((imgUrl, index) => {
+        const isMain = (index === 0);
+        const card = document.createElement('div');
+        card.className = 'gallery-card' + (isMain ? ' is-main' : '');
+
+        // Top Badge
+        const badge = document.createElement('span');
+        if (isMain) {
+          badge.className = 'badge-main-cover';
+          badge.textContent = '★ 1st · Main Cover';
+          badge.title = 'Arranged 1st: This is the product cover image shown on the storefront and checkout';
+        } else {
+          badge.className = 'badge-pos';
+          badge.textContent = `Photo #${index + 1}`;
+        }
+        card.appendChild(badge);
+
+        // Thumbnail
+        const thumbWrap = document.createElement('div');
+        thumbWrap.className = 'gallery-img-wrap';
+        const img = document.createElement('img');
+        img.src = imgUrl;
+        img.alt = `Product photo ${index + 1}`;
+        img.onerror = () => { img.src = '/assets/merch-tee.jpg'; };
+        thumbWrap.appendChild(img);
+        card.appendChild(thumbWrap);
+
+        // Action Toolbar
+        const actions = document.createElement('div');
+        actions.className = 'gallery-actions';
+
+        if (!isMain) {
+          // Make Main button
+          const btnMain = document.createElement('button');
+          btnMain.type = 'button';
+          btnMain.className = 'btn-set-main';
+          btnMain.innerHTML = '★ Make Main';
+          btnMain.title = 'Move this photo to the 1st position as the primary cover';
+          btnMain.onclick = (e) => { e.stopPropagation(); makeImageMain(index); };
+          actions.appendChild(btnMain);
+        } else {
+          const mainTag = document.createElement('span');
+          mainTag.style.fontSize = '.62rem';
+          mainTag.style.color = 'var(--marigold)';
+          mainTag.style.fontFamily = 'monospace';
+          mainTag.style.fontWeight = 'bold';
+          mainTag.style.paddingLeft = '.2rem';
+          mainTag.textContent = '✓ Active Cover';
+          actions.appendChild(mainTag);
+        }
+
+        // Left Arrow
+        const btnLeft = document.createElement('button');
+        btnLeft.type = 'button';
+        btnLeft.className = 'btn-order-arrow';
+        btnLeft.innerHTML = '◀';
+        btnLeft.title = 'Move earlier';
+        btnLeft.disabled = (index === 0);
+        btnLeft.onclick = (e) => { e.stopPropagation(); moveImage(index, -1); };
+        actions.appendChild(btnLeft);
+
+        // Right Arrow
+        const btnRight = document.createElement('button');
+        btnRight.type = 'button';
+        btnRight.className = 'btn-order-arrow';
+        btnRight.innerHTML = '▶';
+        btnRight.title = 'Move later';
+        btnRight.disabled = (index === currentImages.length - 1);
+        btnRight.onclick = (e) => { e.stopPropagation(); moveImage(index, 1); };
+        actions.appendChild(btnRight);
+
+        // Delete Button
+        const btnDel = document.createElement('button');
+        btnDel.type = 'button';
+        btnDel.className = 'btn-del-img';
+        btnDel.innerHTML = '✕';
+        btnDel.title = 'Delete photo from product';
+        btnDel.onclick = (e) => { e.stopPropagation(); deleteImage(index); };
+        actions.appendChild(btnDel);
+
+        card.appendChild(actions);
+        container.appendChild(card);
+      });
+
+      // Update hidden form field
+      document.getElementById('modal_existing_images').value = JSON.stringify(currentImages);
+    }
+
+    function makeImageMain(index) {
+      if (index <= 0 || index >= currentImages.length) return;
+      const [chosen] = currentImages.splice(index, 1);
+      currentImages.unshift(chosen);
+      renderImageGallery();
+    }
+
+    function moveImage(index, delta) {
+      const target = index + delta;
+      if (target < 0 || target >= currentImages.length) return;
+      const temp = currentImages[index];
+      currentImages[index] = currentImages[target];
+      currentImages[target] = temp;
+      renderImageGallery();
+    }
+
+    function deleteImage(index) {
+      if (index < 0 || index >= currentImages.length) return;
+      currentImages.splice(index, 1);
+      if (currentImages.length === 0) {
+        currentImages = ['/assets/merch-tee.jpg'];
+      }
+      renderImageGallery();
+    }
+
+    function addPresetImage(assetPath) {
+      if (!currentImages.includes(assetPath)) {
+        currentImages.push(assetPath);
+      }
+      renderImageGallery();
+    }
+
+    function fileToDataUrl(file) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = () => resolve('/assets/merch-tee.jpg');
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const dropZone = document.getElementById('galleryDropZone');
+      if (dropZone) dropZone.classList.add('drag-active');
+    }
+
+    function handleDragLeave(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const dropZone = document.getElementById('galleryDropZone');
+      if (dropZone) dropZone.classList.remove('drag-active');
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const dropZone = document.getElementById('galleryDropZone');
+      if (dropZone) dropZone.classList.remove('drag-active');
+      const dt = e.dataTransfer;
+      if (dt && dt.files && dt.files.length > 0) {
+        handleFileUpload({ target: { files: dt.files, value: '' } });
+      }
+    }
+
+    async function handleFileUpload(event) {
+      const files = event.target ? event.target.files : event.files;
+      if (!files || files.length === 0) return;
+
+      const status = document.getElementById('uploadStatusText');
+      if (status) status.textContent = `Uploading ${files.length} photo(s)...`;
+
+      const uploadList = Array.from(files);
+
+      for (let i = 0; i < uploadList.length; i++) {
+        const file = uploadList[i];
+        try {
+          const fd = new FormData();
+          fd.append('file', file);
+          fd.append('image', file);
+
+          const res = await fetch('/admin/api/upload-image', {
+            method: 'POST',
+            body: fd
+          });
+
+          let savedUrl = null;
+          const contentType = res.headers.get('content-type') || '';
+
+          if (res.ok && contentType.includes('application/json')) {
+            const data = await res.json();
+            if (data && data.success && data.url) {
+              savedUrl = data.url;
+            }
+          }
+
+          // If upload endpoint didn't return a JSON URL or wasn't 200, fallback to DataURL
+          if (!savedUrl) {
+            savedUrl = await fileToDataUrl(file);
+          }
+
+          if (savedUrl && !currentImages.includes(savedUrl)) {
+            currentImages.push(savedUrl);
+          }
+        } catch (err) {
+          console.warn('Async upload fallback to local preview:', err.message);
+          try {
+            const fallbackUrl = await fileToDataUrl(file);
+            if (fallbackUrl && !currentImages.includes(fallbackUrl)) {
+              currentImages.push(fallbackUrl);
+            }
+          } catch (e) {
+            console.error('File reading failed:', e);
+          }
+        }
+      }
+
+      if (status) {
+        status.textContent = '✓ Photo(s) ready!';
+        setTimeout(() => { status.textContent = ''; }, 3000);
+      }
+      if (event.target) event.target.value = '';
+      renderImageGallery();
+    }
+
+    function openAddModal() {
+      document.getElementById('modalTitle').textContent = '＋ Add New Product';
+      document.getElementById('modal_id').value = '';
+      document.getElementById('modal_name').value = '';
+      document.getElementById('modal_category').value = 'Drop 01 · Apparel';
+      document.getElementById('modal_price').value = '2500';
+      document.getElementById('modal_description').value = '';
+      document.getElementById('btnSaveModal').textContent = 'Create Product';
+
+      toggleStoreAvailability(true);
+
+      currentImages = ['/assets/merch-tee.jpg'];
+      renderImageGallery();
+
+      applyPresetSizes(['S', 'M', 'L', 'XL', 'XXL']);
+      document.getElementById('productModal').classList.add('open');
+      document.getElementById('modal_name').focus();
+    }
+
+    function openEditModal(prodId) {
+      const prod = productsData.find(p => p.id === Number(prodId));
+      if (!prod) return;
+
+      document.getElementById('modalTitle').textContent = '✎ Edit: ' + prod.name;
+      document.getElementById('modal_id').value = prod.id;
+      document.getElementById('modal_name').value = prod.name || '';
+      document.getElementById('modal_category').value = prod.category || '';
+      document.getElementById('modal_price').value = prod.price_kes || 0;
+      document.getElementById('modal_description').value = prod.description || '';
+      document.getElementById('btnSaveModal').textContent = 'Update Product';
+
+      toggleStoreAvailability(Boolean(prod.is_available));
+
+      // Populate images array
+      if (Array.isArray(prod.images) && prod.images.length > 0) {
+        currentImages = [...prod.images];
+      } else if (prod.image_path) {
+        currentImages = [prod.image_path];
+      } else {
+        currentImages = ['/assets/merch-tee.jpg'];
+      }
+      renderImageGallery();
+
+      // Parse sizes
+      const sizesArray = (prod.sizes || '')
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean);
+      applyPresetSizes(sizesArray);
+
+      document.getElementById('productModal').classList.add('open');
+      document.getElementById('modal_name').focus();
+    }
+
+    function closeModal() {
+      document.getElementById('productModal').classList.remove('open');
+      const tray = document.getElementById('presetsTray');
+      if (tray) tray.style.display = 'none';
+    }
+
+    function handleBackdropClick(event) {
+      if (event.target.id === 'productModal') {
+        closeModal();
+      }
+    }
+
+    // Size Picker logic
+    function toggleSize(size) {
+      const idx = currentSelectedSizes.indexOf(size);
+      if (idx > -1) {
+        currentSelectedSizes.splice(idx, 1);
+      } else {
+        currentSelectedSizes.push(size);
+      }
+      syncSizesUI();
+    }
+
+    function applyPresetSizes(sizesArray) {
+      currentSelectedSizes = [...sizesArray];
+      syncSizesUI();
+    }
+
+    function syncSizesUI() {
+      const chips = document.querySelectorAll('#sizeChipsContainer .chip-size');
+      chips.forEach(chip => {
+        const size = chip.getAttribute('data-size');
+        if (currentSelectedSizes.includes(size)) {
+          chip.classList.add('active');
+        } else {
+          chip.classList.remove('active');
+        }
+      });
+      document.getElementById('modal_sizes').value = currentSelectedSizes.join(', ');
+    }
+
+    function syncChipsFromInput() {
+      const val = document.getElementById('modal_sizes').value;
+      currentSelectedSizes = val
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean);
+      const chips = document.querySelectorAll('#sizeChipsContainer .chip-size');
+      chips.forEach(chip => {
+        const size = chip.getAttribute('data-size');
+        if (currentSelectedSizes.includes(size)) {
+          chip.classList.add('active');
+        } else {
+          chip.classList.remove('active');
+        }
+      });
+    }
+
+    // Auto-open if edit query parameter was provided
+    window.addEventListener('DOMContentLoaded', () => {
+      if (initialEditId) {
+        openEditModal(initialEditId);
+      }
+    });
+
+    // Close on Escape key
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+  </script>
 </body>
 </html>
