@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmed — Wendo 2.0</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+    :root {
+      --bg: #FAF3BA;
+      --surface: #FFFBEF;
+      --surface-2: #F3E9A8;
+      --text: #2A0D0D;
+      --muted: #8C4A3A;
+      --burgundy: #D70000;
+      --burgundy-strong: #9E0000;
+      --marigold: #F8DF01;
+      --marigold-text: #A8600A;
+      --line: rgba(42,13,13,.15);
+      --line-strong: rgba(42,13,13,.3);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #1A0505; --surface: #2A0A0A; --surface-2: #3A0E0E;
+        --text: #FAF3BA; --muted: #D9A8A0;
+        --burgundy: #FF3B3B; --burgundy-strong: #C41E1E;
+        --marigold: #FFE94D; --marigold-text: #FFC93C;
+        --line: rgba(250,243,186,.15); --line-strong: rgba(250,243,186,.3);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Schibsted Grotesk', system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    .mono { font-family: 'IBM Plex Mono', monospace; }
+    h1, h2, h3 { font-family: 'Luckiest Guy', sans-serif; font-weight: 400; margin: 0; }
+    .ribbon {
+      height: 10px;
+      background: repeating-linear-gradient(90deg,
+        var(--burgundy) 0 18px, var(--marigold) 18px 36px, var(--surface) 36px 54px);
+    }
+    .site-nav {
+      background: var(--burgundy-strong);
+      padding: .9rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand { font-family: 'IBM Plex Mono', monospace; font-size: .85rem; color: var(--marigold); text-transform: uppercase; letter-spacing: .08em; }
+
+    .wrap { max-width: 640px; margin: 3rem auto; padding: 0 1.25rem; }
+    .success-card {
+      background: var(--surface);
+      border: 1px solid var(--line-strong);
+      box-shadow: 0 20px 40px rgba(42,13,13,.15);
+      padding: 2.5rem;
+      text-align: center;
+    }
+    .badge-icon {
+      width: 72px;
+      height: 72px;
+      background: var(--marigold);
+      color: #241209;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      margin-bottom: 1.5rem;
+    }
+    h1 { font-size: 2.4rem; color: var(--burgundy); margin-bottom: .6rem; }
+    p.lead { font-size: 1.1rem; color: var(--muted); margin: 0 0 2rem; }
+
+    .receipt-box {
+      background: var(--surface-2);
+      border: 1px solid var(--line-strong);
+      padding: 1.5rem;
+      text-align: left;
+      margin-bottom: 2rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .88rem;
+    }
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      padding: .5rem 0;
+      border-bottom: 1px dashed var(--line-strong);
+    }
+    .receipt-row:last-child {
+      border-bottom: none;
+      padding-top: .75rem;
+      font-weight: 700;
+      color: var(--burgundy);
+      font-size: 1.05rem;
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--burgundy);
+      color: #F8EFD8;
+      padding: .9rem 2rem;
+      text-decoration: none;
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-weight: 600;
+      border: 2px solid var(--burgundy);
+    }
+    .btn:hover { background: var(--burgundy-strong); }
+  </style>
+</head>
+<body>
+  <nav class="site-nav">
+    <span class="nav-brand">Wendo Collective Presents · Official Store</span>
+    <a href="/" style="color: #F8EFD8; text-decoration: none; font-family: monospace; font-size: .8rem;">Home</a>
+  </nav>
+  <div class="ribbon"></div>
+
+  <div class="wrap">
+    <div class="success-card">
+      <div class="badge-icon">✓</div>
+      <h1>Order Received!</h1>
+      <p class="lead">Ni Thayũ. Your Wendo 2.0 merchandise order has been logged and confirmed via Pesapal.</p>
+
+      <div class="receipt-box">
+        <div class="receipt-row">
+          <span>Order Ref:</span>
+          <span><strong><%= order.order_id %></strong></span>
+        </div>
+        <div class="receipt-row">
+          <span>Item:</span>
+          <span><%= order.product_name %> (<%= order.size %>)</span>
+        </div>
+        <div class="receipt-row">
+          <span>Quantity:</span>
+          <span><%= order.quantity %></span>
+        </div>
+        <div class="receipt-row">
+          <span>Customer:</span>
+          <span><%= order.customer_name %></span>
+        </div>
+        <div class="receipt-row">
+          <span>Phone / M-Pesa:</span>
+          <span><%= order.customer_phone %></span>
+        </div>
+        <div class="receipt-row">
+          <span>Delivery:</span>
+          <span><%= order.delivery_address %></span>
+        </div>
+        <div class="receipt-row">
+          <span>Pesapal Status:</span>
+          <span style="color: #1a7f37; font-weight: bold;"><%= order.payment_status %></span>
+        </div>
+        <div class="receipt-row">
+          <span>Total Paid:</span>
+          <span><%= formatPrice(order.amount_kes) %></span>
+        </div>
+      </div>
+
+      <a href="/" class="btn">← Back to Wendo 2.0</a>
+    </div>
+  </div>
+</body>
+</html>

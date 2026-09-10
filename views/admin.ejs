@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wendo CMS: Dashboard</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+    :root {
+      --bg: #1A0505;
+      --surface: #2A0A0A;
+      --surface-2: #3A0E0E;
+      --text: #FAF3BA;
+      --muted: #D9A8A0;
+      --burgundy: #FF3B3B;
+      --marigold: #F8DF01;
+      --line: rgba(250,243,186,.2);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Schibsted Grotesk', system-ui, sans-serif;
+      line-height: 1.5;
+    }
+    .mono { font-family: 'IBM Plex Mono', monospace; }
+    h1, h2, h3 { font-family: 'Luckiest Guy', sans-serif; font-weight: 400; }
+    .site-nav {
+      background: var(--surface);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-brand { font-family: 'IBM Plex Mono', monospace; color: var(--marigold); }
+    .wrap { max-width: 1080px; margin: 2rem auto; padding: 0 1.5rem; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+    }
+    .card h2 { color: var(--marigold); margin-bottom: 1.2rem; font-size: 1.8rem; }
+    table { width: 100%; border-collapse: collapse; margin-top: .5rem; }
+    th, td {
+      padding: .85rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      font-size: .9rem;
+    }
+    th {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .75rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+    }
+    .badge {
+      display: inline-block;
+      padding: .25rem .6rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .7rem;
+      text-transform: uppercase;
+      border-radius: 3px;
+    }
+    .badge-green { background: #1a7f37; color: #fff; }
+    .badge-gray { background: #57606a; color: #fff; }
+    .btn-sm {
+      padding: .4rem .8rem;
+      background: var(--marigold);
+      color: #241209;
+      border: none;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .75rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav">
+    <span class="nav-brand">WENDO 2.0 · CMS DASHBOARD</span>
+    <div>
+      <a href="/" style="color: #FAF3BA; font-family: monospace; font-size: .8rem; text-decoration: none; margin-right: 1.5rem;">View Public Site →</a>
+      <a href="/install.php" style="color: var(--marigold); font-family: monospace; font-size: .8rem; text-decoration: none;">Install Info</a>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <div class="card">
+      <h2>Products &amp; Inventory</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price (KES)</th>
+            <th>Sizes</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% products.forEach(function(p) { %>
+          <tr>
+            <td class="mono">#<%= p.id %></td>
+            <td><strong><%= p.name %></strong></td>
+            <td class="mono"><%= p.category %></td>
+            <td class="mono"><%= formatPrice(p.price_kes) %></td>
+            <td class="mono"><%= p.sizes || '—' %></td>
+            <td>
+              <% if (p.is_available) { %>
+                <span class="badge badge-green">Buyable Now</span>
+              <% } else { %>
+                <span class="badge badge-gray">Coming Soon</span>
+              <% } %>
+            </td>
+            <td>
+              <form action="/admin/toggle-product" method="POST" style="display:inline;">
+                <input type="hidden" name="id" value="<%= p.id %>">
+                <button type="submit" class="btn-sm"><%= p.is_available ? 'Make Coming Soon' : 'Make Buyable' %></button>
+              </form>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Recent Orders (Pesapal)</h2>
+      <% if (orders && orders.length > 0) { %>
+        <table>
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Item</th>
+              <th>Qty</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% orders.forEach(function(o) { %>
+            <tr>
+              <td class="mono"><%= o.order_id %></td>
+              <td><%= o.customer_name %><br><span style="font-size: .8rem; color: var(--muted);"><%= o.customer_phone %></span></td>
+              <td><%= o.product_name %> (<%= o.size %>)</td>
+              <td class="mono"><%= o.quantity %></td>
+              <td class="mono"><%= formatPrice(o.amount_kes) %></td>
+              <td><span class="badge badge-green"><%= o.payment_status %></span></td>
+              <td class="mono" style="font-size: .8rem;"><%= new Date(o.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %></td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      <% } else { %>
+        <p style="color: var(--muted); font-size: .95rem;">No orders placed yet. Products purchased on the store will display here.</p>
+      <% } %>
+    </div>
+
+    <div class="card">
+      <h2>Video Reviews</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Reviewer</th>
+            <th>Caption</th>
+            <th>Video Source</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% reviews.forEach(function(r) { %>
+          <tr>
+            <td><strong><%= r.reviewer_name %></strong></td>
+            <td><%= r.caption || '—' %></td>
+            <td class="mono" style="font-size: .8rem;"><%= r.video_url || r.video_path %></td>
+            <td><span class="badge badge-green">Published</span></td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "wendocollective",
+  "version": "1.0.0",
+  "description": "Wendo 2.0 festival ticket landing page and merch storefront",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "node server.js",
+    "build": "node -e \"console.log('Build completed successfully')\"",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.21.2"
+  }
+}

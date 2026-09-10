@@ -1,0 +1,8 @@
+{
+  "name": "Wendo Collective",
+  "description": "Ticket landing page and merch storefront for Wendo 2.0: Ambũi Edition",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

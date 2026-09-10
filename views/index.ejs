@@ -1,9 +1,6 @@
-<?php
-require_once __DIR__ . '/includes/db.php';
-require_once __DIR__ . '/includes/functions.php';
-$products = db()->query('SELECT * FROM products ORDER BY sort_order, id')->fetchAll();
-$reviews = db()->query('SELECT * FROM reviews WHERE is_published = 1 ORDER BY sort_order, id DESC')->fetchAll();
-?>
+<!doctype html>
+<html lang="en">
+<head>
 <meta charset="UTF-8">
 <title>Wendo 2.0</title>
 <style>
@@ -376,6 +373,8 @@ $reviews = db()->query('SELECT * FROM reviews WHERE is_published = 1 ORDER BY so
   }
   .skip-link:focus{ top:1rem; }
 </style>
+</head>
+<body>
 
 <a class="skip-link" href="#main-content">Skip to content</a>
 
@@ -390,7 +389,7 @@ $reviews = db()->query('SELECT * FROM reviews WHERE is_published = 1 ORDER BY so
     </div>
     <div class="nav-links" id="nav-links">
       <a href="#merch">Merch</a>
-      <?php if ($reviews): ?><a href="#reviews">Reviews</a><?php endif; ?>
+      <% if (reviews && reviews.length > 0) { %><a href="#reviews">Reviews</a><% } %>
       <a href="recap.html">See The 1.0 Recap →</a>
     </div>
   </div>
@@ -557,27 +556,27 @@ $reviews = db()->query('SELECT * FROM reviews WHERE is_published = 1 ORDER BY so
       <p>Official Wendo 2.0 gear. Prices and availability are managed live from the CMS.</p>
     </div>
     <div class="merch-grid reveal">
-      <?php foreach ($products as $p): ?>
+      <% products.forEach(function(p) { %>
       <div class="merch-card">
         <div class="merch-art">
-          <?php if (!empty($p['image_path'])): ?>
-            <img src="<?= e($p['image_path']) ?>" alt="<?= e($p['name']) ?>" style="width:100%;height:100%;object-fit:cover;">
-          <?php endif; ?>
-          <?php if (!$p['is_available']): ?><span class="merch-ribbon">Coming Soon</span><?php endif; ?>
+          <% if (p.image_path) { %>
+            <img src="<%= p.image_path %>" alt="<%= p.name %>" style="width:100%;height:100%;object-fit:cover;">
+          <% } %>
+          <% if (!p.is_available) { %><span class="merch-ribbon">Coming Soon</span><% } %>
         </div>
         <div class="merch-body">
-          <span class="tag-soon"><?= e($p['category']) ?></span>
-          <h3><?= e($p['name']) ?></h3>
-          <p><?= e($p['description']) ?></p>
-          <?php if ($p['is_available']): ?>
-            <p class="merch-price"><?= format_price((float)$p['price_kes']) ?></p>
-            <a class="btn" href="pesapal/initiate-payment.php?product_id=<?= (int)$p['id'] ?>">Buy Now</a>
-          <?php else: ?>
+          <span class="tag-soon"><%= p.category %></span>
+          <h3><%= p.name %></h3>
+          <p><%= p.description %></p>
+          <% if (p.is_available) { %>
+            <p class="merch-price"><%= formatPrice(p.price_kes) %></p>
+            <a class="btn" href="pesapal/initiate-payment.php?product_id=<%= p.id %>">Buy Now</a>
+          <% } else { %>
             <p class="merch-price" style="opacity:.6;">Price TBA</p>
-          <?php endif; ?>
+          <% } %>
         </div>
       </div>
-      <?php endforeach; ?>
+      <% }); %>
     </div>
     <form class="notify-row" onsubmit="return false;">
       <input type="email" class="notify-input" placeholder="you@email.com" aria-label="Email address" disabled>
@@ -586,7 +585,7 @@ $reviews = db()->query('SELECT * FROM reviews WHERE is_published = 1 ORDER BY so
     <p class="placeholder-note">[ The notify-me box above isn’t wired up yet. Everything else in this shop (products, prices, availability, checkout) is live and managed from /admin. ]</p>
   </section>
 
-  <?php if ($reviews): ?>
+  <% if (reviews && reviews.length > 0) { %>
   <section class="wrap" id="reviews">
     <div class="section-head reveal">
       <span class="eyebrow">From The Crowd</span>
@@ -594,16 +593,26 @@ $reviews = db()->query('SELECT * FROM reviews WHERE is_published = 1 ORDER BY so
       <p>Real reactions from the people who were actually there at Wendo 1.0.</p>
     </div>
     <div class="reviews-grid reveal">
-      <?php foreach ($reviews as $r): ?>
+      <% reviews.forEach(function(r) { %>
       <div class="review-card">
         <div class="review-media">
-          <?php if (!empty($r['video_path'])): ?>
-            <video src="<?= e($r['video_path']) ?>" controls preload="metadata"></video>
-          <?php elseif (!empty($r['video_url']) && ($embed = youtube_embed_url($r['video_url']))): ?>
-            <iframe src="<?= e($embed) ?>" title="Review from <?= e($r['reviewer_name']) ?>" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"></iframe>
-          <?php elseif (!empty($r['video_url'])): ?>
-            <a class="review-link" href="<?= e($r['video_url']) ?>" target="_blank" rel="noopener">Watch video →</a>
-          <?php endif; ?>
+          <% if (r.video_path) { %>
+            <video src="<%= r.video_path %>" controls preload="metadata"></video>
+          <% } else if (r.video_url && youtubeEmbedUrl(r.video_url)) { %>
+            <iframe src="<%= youtubeEmbedUrl(r.video_url) %>" title="Review from <%= r.reviewer_name %>" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"></iframe>
+          <% } else if (r.video_url) { %>
+            <a class="review-link" href="<%= r.video_url %>" target="_blank" rel="noopener">Watch video →</a>
+          <% } %>
+        </div>
+        <div class="review-body">
+          <h3><%= r.reviewer_name %></h3>
+          <% if (r.caption) { %><p><%= r.caption %></p><% } %>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+  </section>
+  <% } %>
         </div>
         <div class="review-body">
           <h3><?= e($r['reviewer_name']) ?></h3>
@@ -843,3 +852,6 @@ $reviews = db()->query('SELECT * FROM reviews WHERE is_published = 1 ORDER BY so
     io.observe(grid);
   })();
 </script>
+
+</body>
+</html>
