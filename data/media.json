@@ -1,0 +1,17 @@
+{
+  "hero": {
+    "url": "https://www.youtube.com/watch?v=cCo4F36en7E",
+    "video_id": "cCo4F36en7E",
+    "title": "Wendo 2.0 announcement",
+    "start_seconds": 0,
+    "poster_url": "https://img.youtube.com/vi/cCo4F36en7E/maxresdefault.jpg",
+    "caption": "Playing muted. Tap the speaker on the player to hear it, or watch on YouTube."
+  },
+  "short": {
+    "url": "https://www.youtube.com/shorts/f3LodYambh8",
+    "video_id": "f3LodYambh8",
+    "title": "Wendo 2.0 short",
+    "poster_url": "https://img.youtube.com/vi/f3LodYambh8/maxresdefault.jpg",
+    "caption": "First look, also on YouTube Shorts."
+  }
+}

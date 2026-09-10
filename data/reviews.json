@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "reviewer_name": "Wanjiku M.",
+    "caption": "“The vibe at 1.0 was unmatched. Can’t wait for Ambũi!”",
+    "video_url": "https://www.youtube.com/watch?v=cCo4F36en7E",
+    "poster_url": "https://img.youtube.com/vi/cCo4F36en7E/hqdefault.jpg",
+    "video_path": "",
+    "is_published": 1,
+    "sort_order": 1
+  },
+  {
+    "id": 2,
+    "reviewer_name": "Kevin K.",
+    "caption": "“The food, the culture, the energy. Counting down the days!”",
+    "video_url": "https://www.youtube.com/watch?v=f3LodYambh8",
+    "poster_url": "https://img.youtube.com/vi/f3LodYambh8/hqdefault.jpg",
+    "video_path": "",
+    "is_published": 1,
+    "sort_order": 2
+  }
+]

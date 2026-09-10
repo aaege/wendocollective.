@@ -764,6 +764,269 @@
       background: var(--marigold-hover);
     }
 
+    /* ---- Media & Video Player Controls (Target: div:nth-of-type(1) > div:nth-of-type(4)) ---- */
+    #media-card, div:nth-of-type(1) > div:nth-of-type(4) {
+      margin-top: 2rem;
+      border: 1px solid var(--line-strong);
+      border-top: 3px solid var(--marigold);
+      background: var(--surface);
+      position: relative;
+    }
+    .media-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 1.75rem;
+      margin-top: 1.25rem;
+    }
+    @media (max-width: 900px) {
+      .media-grid { grid-template-columns: 1fr; }
+    }
+    .media-section-box {
+      background: var(--surface-2);
+      border: 1px solid var(--line-strong);
+      padding: 1.25rem;
+      border-radius: 4px;
+    }
+    .media-section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: .6rem;
+      border-bottom: 1px solid var(--line-strong);
+    }
+    .media-section-title {
+      font-family: 'Luckiest Guy', sans-serif;
+      font-size: 1.2rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .media-preview-container {
+      margin-top: 1rem;
+      border: 1px solid var(--line-strong);
+      background: #000;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+    .media-preview-ratio-16-9 {
+      aspect-ratio: 16/9;
+      width: 100%;
+    }
+    .media-preview-ratio-9-16 {
+      aspect-ratio: 9/16;
+      max-width: 220px;
+      margin: 0 auto;
+    }
+    .media-preview-container iframe,
+    .media-preview-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      border: 0;
+    }
+    .media-preset-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-top: .6rem;
+    }
+    .media-preset-btn {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .72rem;
+      padding: .3rem .65rem;
+      background: var(--surface);
+      border: 1px solid var(--line-strong);
+      color: var(--marigold);
+      cursor: pointer;
+      border-radius: 3px;
+      transition: all .2s ease;
+    }
+    .media-preset-btn:hover {
+      background: var(--marigold);
+      color: #241209;
+      border-color: var(--marigold);
+    }
+    .media-badge-live {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .7rem;
+      color: #92e6a3;
+      background: rgba(146, 230, 163, .12);
+      border: 1px solid rgba(146, 230, 163, .3);
+      padding: .2rem .55rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .media-badge-live::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #92e6a3;
+      border-radius: 50%;
+      animation: pulse-live 1.8s infinite;
+    }
+    @keyframes pulse-live {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: .4; transform: scale(.75); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* ---- Poster Upload & Reviews Editor within Unified Media Panel ---- */
+    .poster-input-flex {
+      display: flex;
+      gap: .5rem;
+      align-items: center;
+    }
+    .poster-input-flex input {
+      flex: 1;
+    }
+    .btn-upload-poster {
+      background: var(--surface);
+      border: 1px solid var(--line-strong);
+      color: var(--marigold);
+      padding: .65rem .85rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      white-space: nowrap;
+      transition: all .2s ease;
+      border-radius: 3px;
+    }
+    .btn-upload-poster:hover {
+      background: var(--marigold);
+      color: #241209;
+      border-color: var(--marigold);
+    }
+    .btn-clear-poster {
+      background: transparent;
+      border: 1px solid rgba(215, 0, 0, .3);
+      color: var(--burgundy);
+      padding: .65rem .75rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .75rem;
+      cursor: pointer;
+      white-space: nowrap;
+      border-radius: 3px;
+      transition: all .2s ease;
+    }
+    .btn-clear-poster:hover {
+      background: rgba(215, 0, 0, .15);
+      border-color: var(--burgundy);
+    }
+
+    .media-section-full {
+      margin-top: 1.75rem;
+      background: var(--surface-2);
+      border: 1px solid var(--line-strong);
+      padding: 1.4rem;
+      border-radius: 4px;
+    }
+    .reviews-editor-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      margin-top: 1.25rem;
+    }
+    .review-card-edit {
+      background: var(--surface);
+      border: 1px solid var(--line-strong);
+      padding: 1.2rem;
+      border-radius: 4px;
+      position: relative;
+    }
+    .review-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: .6rem;
+      border-bottom: 1px dashed var(--line-strong);
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .review-card-title {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-family: 'Luckiest Guy', sans-serif;
+      font-size: 1.1rem;
+      color: var(--marigold);
+    }
+    .review-layout-grid {
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: 1.25rem;
+    }
+    @media (max-width: 950px) {
+      .review-layout-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .review-preview-thumb {
+      aspect-ratio: 9/16;
+      max-height: 280px;
+      background: #000;
+      border: 1px solid var(--line-strong);
+      border-radius: 3px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .review-preview-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .btn-add-review {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .8rem;
+      font-weight: 600;
+      background: var(--surface);
+      color: var(--marigold);
+      border: 1px dashed var(--marigold);
+      padding: .75rem 1.25rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      border-radius: 3px;
+      transition: all .2s ease;
+      margin-top: 1rem;
+    }
+    .btn-add-review:hover {
+      background: rgba(232, 163, 61, .15);
+      border-style: solid;
+    }
+    .btn-delete-review {
+      background: transparent;
+      border: 1px solid rgba(215, 0, 0, .3);
+      color: var(--burgundy);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .72rem;
+      padding: .3rem .6rem;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: all .2s ease;
+    }
+    .btn-delete-review:hover {
+      background: rgba(215, 0, 0, .15);
+      border-color: var(--burgundy);
+    }
+
     @media (max-width: 760px) {
       .form-row { grid-template-columns: 1fr; }
       .image-upload-wrap { grid-template-columns: 1fr; }
@@ -786,18 +1049,32 @@
   </nav>
 
   <div class="wrap">
+    <% if (typeof error !== 'undefined' && error) { %>
+      <aside class="alert-banner" id="alert-banner" style="border-color:#ff5252; color:#ff9999; background:rgba(255,82,82,.15);">
+        <span>⚠ <%= error %></span>
+        <button type="button" onclick="document.getElementById('alert-banner').remove()" style="background:none;border:none;color:#ff9999;font-size:1.2rem;cursor:pointer;">✕</button>
+      </aside>
+    <% } %>
+
+    <% if (typeof media_saved !== 'undefined' && media_saved) { %>
+      <aside class="alert-banner" id="alert-banner-media" style="border-color:#e8a33d; color:#ffd285; background:rgba(232,163,61,.15);">
+        <span>✓ Media player settings updated successfully! The new trailer is now playing live on the front end.</span>
+        <button type="button" onclick="document.getElementById('alert-banner-media').remove()" style="background:none;border:none;color:#ffd285;font-size:1.2rem;cursor:pointer;">✕</button>
+      </aside>
+    <% } %>
+
     <% if (saved) { %>
-      <div class="alert-banner" id="alert-banner">
+      <aside class="alert-banner" id="alert-banner">
         <span>✓ Product catalog updated successfully. Changes are live on the storefront!</span>
         <button type="button" onclick="document.getElementById('alert-banner').remove()" style="background:none;border:none;color:#92e6a3;font-size:1.2rem;cursor:pointer;">✕</button>
-      </div>
+      </aside>
     <% } %>
 
     <% if (deleted) { %>
-      <div class="alert-banner" id="alert-banner" style="border-color:#ff5252; color:#ff9999; background:rgba(255,82,82,.15);">
+      <aside class="alert-banner" id="alert-banner" style="border-color:#ff5252; color:#ff9999; background:rgba(255,82,82,.15);">
         <span>✓ Product was permanently removed from catalog.</span>
         <button type="button" onclick="document.getElementById('alert-banner').remove()" style="background:none;border:none;color:#ff9999;font-size:1.2rem;cursor:pointer;">✕</button>
-      </div>
+      </aside>
     <% } %>
 
     <!-- Products & Inventory Card (Target selector: div:nth-of-type(1) > div:nth-of-type(1)) -->
@@ -915,31 +1192,218 @@
       <% } %>
     </div>
 
-    <!-- Video Reviews Card -->
-    <div class="card">
-      <h2 style="color: var(--marigold); margin-bottom: 1.2rem; font-size: 1.7rem;">Published Video Reviews</h2>
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Reviewer</th>
-              <th>Caption</th>
-              <th>Video Embed URL</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% reviews.forEach(function(r) { %>
-            <tr>
-              <td><strong><%= r.reviewer_name %></strong></td>
-              <td><%= r.caption || '—' %></td>
-              <td class="mono" style="font-size: .8rem;"><%= r.video_url || r.video_path %></td>
-              <td><span class="badge badge-green">Published</span></td>
-            </tr>
-            <% }); %>
-          </tbody>
-        </table>
+    <!-- Unified Media, Videos & Reviews Control Center (Consolidated Single Panel) -->
+    <div class="card" id="media-card">
+      <div class="card-header-bar">
+        <div class="card-title-group">
+          <div style="display:flex; align-items:center; gap:.75rem; flex-wrap:wrap;">
+            <h2>Live Media, Video Players &amp; Reviews</h2>
+            <span class="media-badge-live">Front-End Synchronized</span>
+          </div>
+          <p>One unified panel to manage all website video URLs and custom poster images across the storefront: Hero Video (16:9), Story Spotlight (9:16), and Customer Video Reviews.</p>
+        </div>
+        <div style="display: flex; gap: .75rem; align-items: center; flex-wrap: wrap;">
+          <a href="/" target="_blank" class="btn-cancel" style="text-decoration:none; display:inline-flex; align-items:center; gap:.4rem;">
+            Preview Front End ↗
+          </a>
+          <button type="submit" form="mediaForm" class="btn-save" id="btnSaveMediaTop">
+            Save All Media Settings
+          </button>
+        </div>
       </div>
+
+      <form id="mediaForm" action="/admin/media/save" method="POST" onsubmit="handleMediaFormSubmit(event)">
+        <input type="hidden" name="reviews_json" id="reviews_json_input" value="">
+
+        <div class="media-grid">
+          <!-- 1. Hero Section Video -->
+          <div class="media-section-box">
+            <div class="media-section-head">
+              <span class="media-section-title">
+                <span>🎬</span> Hero Video Player (16:9)
+              </span>
+              <span class="mono" style="font-size: .75rem; color: var(--marigold);">Main Landing Header</span>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label for="hero_url">Website / Video URL or YouTube ID <span style="color:var(--burgundy)">*</span></label>
+              <input type="text" id="hero_url" name="hero_url" class="form-control" 
+                value="<%= (typeof media !== 'undefined' && media && media.hero && media.hero.url) ? media.hero.url : 'https://www.youtube.com/watch?v=cCo4F36en7E' %>" 
+                placeholder="https://www.youtube.com/watch?v=... or 11-char ID" 
+                oninput="updateHeroPreview()" required>
+              <span class="field-hint">Supports YouTube links (watch?v=), short links (youtu.be/), or direct 11-character video IDs.</span>
+            </div>
+
+            <!-- Custom Poster Image URL + Upload Button -->
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label for="hero_poster">Custom Poster Image URL</label>
+              <div class="poster-input-flex">
+                <input type="text" id="hero_poster" name="hero_poster" class="form-control" 
+                  value="<%= (typeof media !== 'undefined' && media && media.hero && media.hero.poster_url) ? media.hero.poster_url : '' %>" 
+                  placeholder="https://... or click Upload Poster" oninput="updateHeroPreview()">
+                <button type="button" class="btn-upload-poster" onclick="triggerPosterUpload('hero_poster', updateHeroPreview)">
+                  📁 Upload Poster
+                </button>
+                <button type="button" class="btn-clear-poster" title="Reset to YouTube thumbnail" onclick="clearPoster('hero_poster', updateHeroPreview)">
+                  ✕ Clear
+                </button>
+              </div>
+              <span class="field-hint">Custom thumbnail image for the hero video frame before playback starts.</span>
+            </div>
+
+            <!-- Quick Presets -->
+            <div style="margin-bottom: 1rem;">
+              <span class="mono" style="font-size: .72rem; color: var(--muted); display: block; margin-bottom: .3rem;">QUICK HERO PRESETS:</span>
+              <div class="media-preset-pills">
+                <button type="button" class="media-preset-btn" onclick="applyHeroPreset('https://www.youtube.com/watch?v=cCo4F36en7E', 329, 'Wendo 2.0 announcement', 'Playing muted. Tap the speaker on the player to hear it, or watch on', 'https://img.youtube.com/vi/cCo4F36en7E/hqdefault.jpg')">
+                  Wendo 2.0 Trailer (Default)
+                </button>
+                <button type="button" class="media-preset-btn" onclick="applyHeroPreset('https://www.youtube.com/watch?v=f3LodYambh8', 0, 'Wendo 2.0 First Look Reel', 'Live coverage from the collective.', 'https://img.youtube.com/vi/f3LodYambh8/hqdefault.jpg')">
+                  Wendo Reel (Alt)
+                </button>
+              </div>
+            </div>
+
+            <div class="form-row" style="margin-bottom: 1rem;">
+              <div class="form-group">
+                <label for="hero_start">Start Timestamp (seconds)</label>
+                <input type="number" id="hero_start" name="hero_start" class="form-control" 
+                  value="<%= (typeof media !== 'undefined' && media && media.hero && media.hero.start_seconds !== undefined) ? media.hero.start_seconds : 329 %>" 
+                  min="0" placeholder="e.g. 329" oninput="updateHeroPreview()">
+                <span class="field-hint">Timestamp when video begins playback (e.g. 329 = 5m 29s).</span>
+              </div>
+              <div class="form-group">
+                <label for="hero_title">Player Title / Accessible Label</label>
+                <input type="text" id="hero_title" name="hero_title" class="form-control" 
+                  value="<%= (typeof media !== 'undefined' && media && media.hero && media.hero.title) ? media.hero.title : 'Wendo 2.0 announcement' %>" 
+                  placeholder="e.g. Wendo 2.0 announcement">
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label for="hero_caption">Video Caption / Footnote Text</label>
+              <input type="text" id="hero_caption" name="hero_caption" class="form-control" 
+                value="<%= (typeof media !== 'undefined' && media && media.hero && media.hero.caption) ? media.hero.caption : 'Playing muted. Tap the speaker on the player to hear it, or watch on' %>" 
+                placeholder="Text displayed below hero video frame">
+            </div>
+
+            <!-- Hero Live Preview Box -->
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.4rem;">
+                <span class="mono" style="font-size: .75rem; color: var(--marigold); font-weight: 600;">HERO PLAYER LIVE PREVIEW:</span>
+                <span id="heroIdBadge" class="mono" style="font-size: .72rem; color: var(--muted);">ID: cCo4F36en7E</span>
+              </div>
+              <div class="media-preview-container media-preview-ratio-16-9" id="heroPreviewBox">
+                <!-- Dynamically populated by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Story / Shorts Spotlight Video -->
+          <div class="media-section-box">
+            <div class="media-section-head">
+              <span class="media-section-title">
+                <span>📱</span> Story / Shorts Spotlight (9:16)
+              </span>
+              <span class="mono" style="font-size: .75rem; color: var(--marigold);">Ambũi Section</span>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label for="short_url">Website / Shorts URL or Video ID <span style="color:var(--burgundy)">*</span></label>
+              <input type="text" id="short_url" name="short_url" class="form-control" 
+                value="<%= (typeof media !== 'undefined' && media && media.short && media.short.url) ? media.short.url : 'https://www.youtube.com/shorts/f3LodYambh8' %>" 
+                placeholder="https://www.youtube.com/shorts/... or 11-char ID" 
+                oninput="updateShortPreview()" required>
+              <span class="field-hint">Vertical format (9:16) for highlights and artist spotlights.</span>
+            </div>
+
+            <!-- Custom Poster Image URL + Upload Button -->
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label for="short_poster">Custom Poster Image URL</label>
+              <div class="poster-input-flex">
+                <input type="text" id="short_poster" name="short_poster" class="form-control" 
+                  value="<%= (typeof media !== 'undefined' && media && media.short && media.short.poster_url) ? media.short.poster_url : '' %>" 
+                  placeholder="https://... or click Upload Poster" oninput="updateShortPreview()">
+                <button type="button" class="btn-upload-poster" onclick="triggerPosterUpload('short_poster', updateShortPreview)">
+                  📁 Upload Poster
+                </button>
+                <button type="button" class="btn-clear-poster" title="Reset to YouTube thumbnail" onclick="clearPoster('short_poster', updateShortPreview)">
+                  ✕ Clear
+                </button>
+              </div>
+              <span class="field-hint">Custom thumbnail image for the vertical short before playback starts.</span>
+            </div>
+
+            <!-- Quick Presets -->
+            <div style="margin-bottom: 1rem;">
+              <span class="mono" style="font-size: .72rem; color: var(--muted); display: block; margin-bottom: .3rem;">QUICK SHORTS PRESETS:</span>
+              <div class="media-preset-pills">
+                <button type="button" class="media-preset-btn" onclick="applyShortPreset('https://www.youtube.com/shorts/f3LodYambh8', 'Wendo 2.0 short', 'First look, also on', 'https://img.youtube.com/vi/f3LodYambh8/hqdefault.jpg')">
+                  Wendo 2.0 Short (Default)
+                </button>
+                <button type="button" class="media-preset-btn" onclick="applyShortPreset('https://www.youtube.com/watch?v=cCo4F36en7E', 'Wendo Collective Story', 'Experience the sound, also on', 'https://img.youtube.com/vi/cCo4F36en7E/hqdefault.jpg')">
+                  Trailer Teaser (Alt)
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label for="short_title">Short Title</label>
+              <input type="text" id="short_title" name="short_title" class="form-control" 
+                value="<%= (typeof media !== 'undefined' && media && media.short && media.short.title) ? media.short.title : 'Wendo 2.0 short' %>" 
+                placeholder="e.g. Wendo 2.0 short">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label for="short_caption">Short Caption</label>
+              <input type="text" id="short_caption" name="short_caption" class="form-control" 
+                value="<%= (typeof media !== 'undefined' && media && media.short && media.short.caption) ? media.short.caption : 'First look, also on' %>" 
+                placeholder="e.g. First look, also on">
+            </div>
+
+            <!-- Shorts Live Preview Box -->
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.4rem;">
+                <span class="mono" style="font-size: .75rem; color: var(--marigold); font-weight: 600;">SHORTS LIVE PREVIEW:</span>
+                <span id="shortIdBadge" class="mono" style="font-size: .72rem; color: var(--muted);">ID: f3LodYambh8</span>
+              </div>
+              <div class="media-preview-container media-preview-ratio-9-16" id="shortPreviewBox">
+                <!-- Dynamically populated by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Customer Video Reviews & Testimonials Section -->
+        <div class="media-section-full">
+          <div class="media-section-head">
+            <div>
+              <span class="media-section-title">
+                <span>⭐</span> Customer Video Reviews &amp; Testimonials
+              </span>
+              <p style="margin: .3rem 0 0; font-size: .85rem; color: var(--muted);">
+                Input website video URLs, custom poster images, and quotes for each review in the "From The Crowd" section.
+              </p>
+            </div>
+            <button type="button" class="btn-add-review" onclick="addNewReviewItem()">
+              + Add Video Review
+            </button>
+          </div>
+
+          <div id="reviewsEditorContainer" class="reviews-editor-grid">
+            <!-- Dynamically populated by renderReviewsEditor() -->
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line-strong); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div id="mediaStatusMsg" class="mono" style="font-size: .85rem; color: var(--muted);">
+            Changes to video URLs and custom poster images update the front-end landing page immediately upon saving.
+          </div>
+          <button type="submit" class="btn-save" id="btnSaveMediaBottom">
+            Save All Media Settings
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -954,7 +1418,7 @@
         <button type="button" class="btn-close" onclick="closeModal()" title="Close (Esc)">✕</button>
       </div>
 
-      <form id="productForm" action="/admin/products/save" method="POST" enctype="multipart/form-data">
+      <form id="productForm" action="/admin/products/save" method="POST" enctype="multipart/form-data" onsubmit="return handleFormSubmit(event)">
         <input type="hidden" name="id" id="modal_id" value="">
         <input type="hidden" name="existing_images" id="modal_existing_images" value="[]">
 
@@ -1319,11 +1783,21 @@
       }
     }
 
+    let isUploading = false;
+
     async function handleFileUpload(event) {
       const files = event.target ? event.target.files : event.files;
       if (!files || files.length === 0) return;
 
       const status = document.getElementById('uploadStatusText');
+      const saveBtn = document.getElementById('btnSaveModal');
+      const originalSaveText = saveBtn ? saveBtn.textContent : 'Save Product';
+
+      isUploading = true;
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Uploading photos...';
+      }
       if (status) status.textContent = `Uploading ${files.length} photo(s)...`;
 
       const uploadList = Array.from(files);
@@ -1333,7 +1807,6 @@
         try {
           const fd = new FormData();
           fd.append('file', file);
-          fd.append('image', file);
 
           const res = await fetch('/admin/api/upload-image', {
             method: 'POST',
@@ -1350,7 +1823,7 @@
             }
           }
 
-          // If upload endpoint didn't return a JSON URL or wasn't 200, fallback to DataURL
+          // If upload endpoint didn't return a JSON URL, fallback to DataURL
           if (!savedUrl) {
             savedUrl = await fileToDataUrl(file);
           }
@@ -1371,12 +1844,33 @@
         }
       }
 
+      isUploading = false;
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = originalSaveText;
+      }
       if (status) {
         status.textContent = '✓ Photo(s) ready!';
         setTimeout(() => { status.textContent = ''; }, 3000);
       }
       if (event.target) event.target.value = '';
       renderImageGallery();
+    }
+
+    function handleFormSubmit(e) {
+      if (isUploading) {
+        e.preventDefault();
+        alert('Please wait for photos to finish uploading before saving.');
+        return false;
+      }
+      // Guarantee synchronized hidden input
+      document.getElementById('modal_existing_images').value = JSON.stringify(currentImages);
+      const saveBtn = document.getElementById('btnSaveModal');
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving...';
+      }
+      return true;
     }
 
     function openAddModal() {
@@ -1491,16 +1985,384 @@
       });
     }
 
+    // ---- Media Player & Reviews Live Management ----
+    let reviewsList = <%- JSON.stringify(reviews || []) %>;
+
+    function parseYouTubeId(input) {
+      if (!input) return '';
+      const str = input.trim();
+      if (/^[a-zA-Z0-9_-]{11}$/.test(str)) {
+        return str;
+      }
+      const match = str.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/|watch\?.+&v=))([\w-]{11})/);
+      return match ? match[1] : '';
+    }
+
+    function parseYouTubeStartTime(url) {
+      if (!url) return 0;
+      const m = url.match(/[?&]t=(\d+)/);
+      return m ? parseInt(m[1], 10) : 0;
+    }
+
+    function triggerPosterUpload(targetInputId, callback) {
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = 'image/*';
+      fileInput.style.display = 'none';
+      document.body.appendChild(fileInput);
+
+      fileInput.onchange = async () => {
+        if (!fileInput.files || fileInput.files.length === 0) {
+          fileInput.remove();
+          return;
+        }
+        const file = fileInput.files[0];
+        const formData = new FormData();
+        formData.append('image', file);
+
+        try {
+          const res = await fetch('/admin/api/upload-image', {
+            method: 'POST',
+            body: formData
+          });
+          const data = await res.json();
+          if (data.success && data.imageUrl) {
+            const input = document.getElementById(targetInputId);
+            if (input) {
+              input.value = data.imageUrl;
+              input.dispatchEvent(new Event('input'));
+            }
+            if (typeof callback === 'function') callback();
+          } else {
+            alert('Upload failed: ' + (data.error || 'Server error'));
+          }
+        } catch (e) {
+          alert('Upload failed: ' + e.message);
+        } finally {
+          fileInput.remove();
+        }
+      };
+
+      fileInput.click();
+    }
+
+    function clearPoster(targetInputId, callback) {
+      const input = document.getElementById(targetInputId);
+      if (input) {
+        input.value = '';
+        input.dispatchEvent(new Event('input'));
+      }
+      if (typeof callback === 'function') callback();
+    }
+
+    function applyHeroPreset(url, start, title, caption, poster) {
+      document.getElementById('hero_url').value = url;
+      document.getElementById('hero_start').value = start;
+      if (title) document.getElementById('hero_title').value = title;
+      if (caption) document.getElementById('hero_caption').value = caption;
+      if (poster) document.getElementById('hero_poster').value = poster;
+      updateHeroPreview();
+    }
+
+    function applyShortPreset(url, title, caption, poster) {
+      document.getElementById('short_url').value = url;
+      if (title) document.getElementById('short_title').value = title;
+      if (caption) document.getElementById('short_caption').value = caption;
+      if (poster) document.getElementById('short_poster').value = poster;
+      updateShortPreview();
+    }
+
+    function updateHeroPreview() {
+      const url = document.getElementById('hero_url').value;
+      const start = document.getElementById('hero_start').value;
+      const customPoster = document.getElementById('hero_poster').value.trim();
+      const videoId = parseYouTubeId(url) || 'cCo4F36en7E';
+      const badge = document.getElementById('heroIdBadge');
+      if (badge) badge.textContent = 'ID: ' + videoId;
+
+      const previewBox = document.getElementById('heroPreviewBox');
+      if (!previewBox) return;
+
+      const posterUrl = customPoster || (videoId ? ('https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg') : '');
+      previewBox.innerHTML = `
+        <img src="${posterUrl}" alt="Hero preview" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='https://img.youtube.com/vi/${videoId}/hqdefault.jpg'">
+        <div style="position:absolute;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;">
+          <a href="https://youtu.be/${videoId}${start ? '?t=' + start : ''}" target="_blank" style="padding:.6rem 1.2rem;background:var(--marigold);color:#241209;text-decoration:none;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:.8rem;border-radius:3px;box-shadow:0 4px 10px rgba(0,0,0,.4);">
+            ▶ Test on YouTube (${start ? start + 's' : '0s'})
+          </a>
+        </div>
+      `;
+    }
+
+    function updateShortPreview() {
+      const url = document.getElementById('short_url').value;
+      const customPoster = document.getElementById('short_poster').value.trim();
+      const videoId = parseYouTubeId(url) || 'f3LodYambh8';
+      const badge = document.getElementById('shortIdBadge');
+      if (badge) badge.textContent = 'ID: ' + videoId;
+
+      const previewBox = document.getElementById('shortPreviewBox');
+      if (!previewBox) return;
+
+      const posterUrl = customPoster || (videoId ? ('https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg') : '');
+      previewBox.innerHTML = `
+        <img src="${posterUrl}" alt="Short preview" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='https://img.youtube.com/vi/${videoId}/hqdefault.jpg'">
+        <div style="position:absolute;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;">
+          <a href="https://www.youtube.com/shorts/${videoId}" target="_blank" style="padding:.5rem .9rem;background:var(--marigold);color:#241209;text-decoration:none;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:.75rem;border-radius:3px;box-shadow:0 4px 10px rgba(0,0,0,.4);">
+            ▶ Test Short
+          </a>
+        </div>
+      `;
+    }
+
+    // ---- Review Items Management ----
+    function renderReviewsEditor() {
+      const container = document.getElementById('reviewsEditorContainer');
+      if (!container) return;
+
+      if (!reviewsList || reviewsList.length === 0) {
+        container.innerHTML = `
+          <div style="padding: 1.5rem; text-align: center; border: 1px dashed var(--line-strong); background: var(--surface);">
+            <p style="color: var(--muted); margin: 0 0 .8rem; font-size: .9rem;">No video reviews added yet.</p>
+            <button type="button" class="btn-add-review" onclick="addNewReviewItem()" style="margin: 0;">
+              + Add First Video Review
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = reviewsList.map((rev, index) => {
+        const vidId = parseYouTubeId(rev.video_url || '');
+        const poster = rev.poster_url || (vidId ? `https://img.youtube.com/vi/${vidId}/hqdefault.jpg` : '');
+        const isPub = (rev.is_published === 1 || rev.is_published === '1' || rev.is_published === true);
+
+        return `
+          <div class="review-card-edit" id="review-card-${index}">
+            <div class="review-card-top">
+              <div class="review-card-title">
+                <span>💬 Review #${index + 1}: ${escapeHtml(rev.reviewer_name || 'Anonymous')}</span>
+              </div>
+              <div style="display:flex; align-items:center; gap: 1rem;">
+                <label style="display:inline-flex; align-items:center; gap:.4rem; font-size:.8rem; font-family:'IBM Plex Mono',monospace; cursor:pointer; color: ${isPub ? '#92e6a3' : 'var(--muted)'};">
+                  <input type="checkbox" ${isPub ? 'checked' : ''} onchange="updateReviewField(${index}, 'is_published', this.checked ? 1 : 0)">
+                  <span>${isPub ? 'Published' : 'Draft / Hidden'}</span>
+                </label>
+                <button type="button" class="btn-delete-review" onclick="deleteReviewItem(${index})" title="Remove this review">
+                  ✕ Remove
+                </button>
+              </div>
+            </div>
+
+            <div class="review-layout-grid">
+              <div>
+                <div class="form-row" style="margin-bottom: .85rem;">
+                  <div class="form-group">
+                    <label>Reviewer Name <span style="color:var(--burgundy)">*</span></label>
+                    <input type="text" class="form-control" value="${escapeHtml(rev.reviewer_name || '')}" 
+                      placeholder="e.g. Wanjiku M." oninput="updateReviewField(${index}, 'reviewer_name', this.value)">
+                  </div>
+                  <div class="form-group">
+                    <label>Website / Video URL (YouTube or link) <span style="color:var(--burgundy)">*</span></label>
+                    <input type="text" class="form-control" id="rev_url_${index}" value="${escapeHtml(rev.video_url || rev.video_path || '')}" 
+                      placeholder="https://www.youtube.com/watch?v=..." oninput="updateReviewField(${index}, 'video_url', this.value)">
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: .85rem;">
+                  <label>Custom Poster Image URL</label>
+                  <div class="poster-input-flex">
+                    <input type="text" class="form-control" id="rev_poster_${index}" value="${escapeHtml(rev.poster_url || '')}" 
+                      placeholder="https://... or click Upload Poster" oninput="updateReviewField(${index}, 'poster_url', this.value)">
+                    <button type="button" class="btn-upload-poster" onclick="triggerPosterUpload('rev_poster_${index}', () => updateReviewField(${index}, 'poster_url', document.getElementById('rev_poster_${index}').value))">
+                      📁 Upload Poster
+                    </button>
+                    <button type="button" class="btn-clear-poster" title="Reset poster" onclick="clearPoster('rev_poster_${index}', () => updateReviewField(${index}, 'poster_url', ''))">
+                      ✕ Clear
+                    </button>
+                  </div>
+                  <span class="field-hint">Upload or paste an image URL to replace the default video frame.</span>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label>Review Caption / Quote</label>
+                  <textarea class="form-control" rows="2" placeholder="“The vibe at 1.0 was unmatched...”" 
+                    oninput="updateReviewField(${index}, 'caption', this.value)">${escapeHtml(rev.caption || '')}</textarea>
+                </div>
+              </div>
+
+              <!-- Live Preview Column -->
+              <div>
+                <span class="mono" style="font-size: .72rem; color: var(--marigold); display: block; margin-bottom: .3rem; font-weight:600;">
+                  THUMBNAIL PREVIEW:
+                </span>
+                <div class="review-preview-thumb" id="rev_preview_${index}">
+                  ${poster ? `
+                    <img src="${poster}" alt="Review thumbnail" onerror="this.style.display='none'">
+                  ` : `
+                    <span class="mono" style="font-size:.75rem; color:var(--muted); text-align:center; padding:.5rem;">No Poster / Video</span>
+                  `}
+                  ${rev.video_url ? `
+                    <div style="position:absolute; inset:0; background:rgba(0,0,0,.35); display:flex; align-items:center; justify-content:center;">
+                      <a href="${rev.video_url}" target="_blank" style="padding:.35rem .7rem; background:var(--marigold); color:#241209; text-decoration:none; font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:.7rem; border-radius:3px;">
+                        ▶ Test Video
+                      </a>
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateReviewField(index, field, value) {
+      if (!reviewsList[index]) return;
+      reviewsList[index][field] = value;
+
+      // Update thumbnail preview dynamically if URL or poster changed
+      if (field === 'video_url' || field === 'poster_url') {
+        const rev = reviewsList[index];
+        const vidId = parseYouTubeId(rev.video_url || '');
+        const poster = rev.poster_url || (vidId ? `https://img.youtube.com/vi/${vidId}/hqdefault.jpg` : '');
+        const thumb = document.getElementById(`rev_preview_${index}`);
+        if (thumb) {
+          thumb.innerHTML = `
+            ${poster ? `<img src="${poster}" alt="Review thumbnail" onerror="this.style.display='none'">` : `<span class="mono" style="font-size:.75rem; color:var(--muted); text-align:center; padding:.5rem;">No Poster / Video</span>`}
+            ${rev.video_url ? `
+              <div style="position:absolute; inset:0; background:rgba(0,0,0,.35); display:flex; align-items:center; justify-content:center;">
+                <a href="${rev.video_url}" target="_blank" style="padding:.35rem .7rem; background:var(--marigold); color:#241209; text-decoration:none; font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:.7rem; border-radius:3px;">
+                  ▶ Test Video
+                </a>
+              </div>
+            ` : ''}
+          `;
+        }
+      }
+    }
+
+    function addNewReviewItem() {
+      const newId = Date.now();
+      reviewsList.push({
+        id: newId,
+        reviewer_name: 'Guest Reviewer',
+        caption: '“Can’t wait for Wendo 2.0!”',
+        video_url: 'https://www.youtube.com/watch?v=cCo4F36en7E',
+        poster_url: 'https://img.youtube.com/vi/cCo4F36en7E/hqdefault.jpg',
+        video_path: '',
+        is_published: 1,
+        sort_order: reviewsList.length + 1
+      });
+      renderReviewsEditor();
+    }
+
+    function deleteReviewItem(index) {
+      if (!confirm('Remove this video review from the storefront?')) return;
+      reviewsList.splice(index, 1);
+      renderReviewsEditor();
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    async function handleMediaFormSubmit(event) {
+      event.preventDefault();
+      const form = document.getElementById('mediaForm');
+      const btnTop = document.getElementById('btnSaveMediaTop');
+      const btnBottom = document.getElementById('btnSaveMediaBottom');
+      const statusMsg = document.getElementById('mediaStatusMsg');
+
+      if (btnTop) btnTop.textContent = 'Saving...';
+      if (btnBottom) btnBottom.textContent = 'Saving...';
+      if (statusMsg) {
+        statusMsg.style.color = 'var(--marigold)';
+        statusMsg.textContent = 'Saving website URLs and poster image settings...';
+      }
+
+      // Sync reviewsList into hidden input
+      const reviewsJsonInput = document.getElementById('reviews_json_input');
+      if (reviewsJsonInput) {
+        reviewsJsonInput.value = JSON.stringify(reviewsList);
+      }
+
+      const formData = new FormData(form);
+      const payload = Object.fromEntries(formData.entries());
+      payload.reviews_json = JSON.stringify(reviewsList);
+
+      try {
+        const response = await fetch('/admin/media/save', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          if (btnTop) btnTop.textContent = 'Save All Media Settings';
+          if (btnBottom) btnBottom.textContent = 'Save All Media Settings';
+          if (statusMsg) {
+            statusMsg.style.color = '#92e6a3';
+            statusMsg.textContent = '✓ Saved! Live media stream & reviews updated on the storefront.';
+          }
+          if (data.reviews) {
+            reviewsList = data.reviews;
+            renderReviewsEditor();
+          }
+
+          // Remove any existing media banner and show fresh confirmation
+          const existingBanner = document.getElementById('alert-banner-media');
+          if (existingBanner) existingBanner.remove();
+
+          const banner = document.createElement('aside');
+          banner.className = 'alert-banner';
+          banner.id = 'alert-banner-media';
+          banner.style.cssText = 'border-color:#92e6a3; color:#92e6a3; background:rgba(146,230,163,.15);';
+          banner.innerHTML = `
+            <span>✓ Website media URLs &amp; poster images have been saved and are live on the storefront!</span>
+            <button type="button" onclick="this.parentElement.remove()" style="background:none;border:none;color:#92e6a3;font-size:1.2rem;cursor:pointer;">✕</button>
+          `;
+          document.querySelector('.wrap').prepend(banner);
+        } else {
+          throw new Error(data.error || 'Failed to save media settings');
+        }
+      } catch (err) {
+        console.error('Media save error:', err);
+        // Fallback to standard form submission
+        form.submit();
+      }
+    }
+
     // Auto-open if edit query parameter was provided
     window.addEventListener('DOMContentLoaded', () => {
       if (initialEditId) {
         openEditModal(initialEditId);
       }
+      updateHeroPreview();
+      updateShortPreview();
+      renderReviewsEditor();
     });
 
     // Close on Escape key
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeModal();
+    });
+
+    // Page Resilience: Redirect to homepage if a fatal page error occurs
+    window.addEventListener('error', (event) => {
+      if (event && event.error && event.error.redirectHome) {
+        window.location.href = '/';
+      }
     });
   </script>
 </body>

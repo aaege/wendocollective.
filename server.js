@@ -17,16 +17,27 @@ const storage = multer.diskStorage({
     cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname).toLowerCase() || '.jpg';
-    const cleanName = path.basename(file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, '');
-    const filename = `prod-${Date.now()}-${cleanName.slice(0, 20)}${ext}`;
-    cb(null, filename);
+    try {
+      const orig = file && file.originalname ? String(file.originalname) : 'photo.jpg';
+      const rawExt = path.extname(orig) || '.jpg';
+      const ext = rawExt.toLowerCase().replace(/[^a-z0-9.]/g, '') || '.jpg';
+      const base = path.basename(orig, rawExt).replace(/[^a-zA-Z0-9_-]/g, '');
+      const cleanName = (base.length > 0 ? base.slice(0, 25) : 'item');
+      const filename = `prod-${Date.now()}-${cleanName}${ext}`;
+      cb(null, filename);
+    } catch (e) {
+      cb(null, `prod-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`);
+    }
   }
 });
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 50 * 1024 * 1024 } // 50MB
+  limits: { 
+    fileSize: 30 * 1024 * 1024, // 30MB
+    fieldSize: 30 * 1024 * 1024, // 30MB - prevents "Field value too long" on base64 images
+    fields: 100
+  }
 });
 
 // Helper to save base64 data URL images as permanent upload files
@@ -51,12 +62,13 @@ function saveBase64Image(dataUrl) {
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Middlewares
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+// Middlewares with expanded limits for high-res images and base64 forms
+app.use(express.urlencoded({ extended: true, limit: '32mb' }));
+app.use(express.json({ limit: '32mb' }));
 
 // Serve static assets
 app.use('/uploads', express.static(uploadDir));
+app.use('/public/uploads', express.static(uploadDir));
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -136,12 +148,88 @@ function saveProducts(list) {
 
 let products = getProducts();
 
-const reviews = [
+// ----------------- MEDIA PERSISTENCE & HELPERS ----------------- //
+const MEDIA_FILE = path.join(__dirname, 'data', 'media.json');
+
+const defaultMedia = {
+  hero: {
+    url: 'https://www.youtube.com/watch?v=cCo4F36en7E',
+    video_id: 'cCo4F36en7E',
+    title: 'Wendo 2.0 announcement',
+    start_seconds: 329,
+    poster_url: 'https://img.youtube.com/vi/cCo4F36en7E/hqdefault.jpg',
+    caption: 'Playing muted. Tap the speaker on the player to hear it, or watch on'
+  },
+  short: {
+    url: 'https://www.youtube.com/shorts/f3LodYambh8',
+    video_id: 'f3LodYambh8',
+    title: 'Wendo 2.0 short',
+    poster_url: 'https://img.youtube.com/vi/f3LodYambh8/hqdefault.jpg',
+    caption: 'First look, also on'
+  }
+};
+
+function extractYouTubeId(url) {
+  if (!url) return '';
+  url = String(url).trim();
+  if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
+  const match = url.match(regExp);
+  if (match && match[2].length === 11) {
+    return match[2];
+  }
+  return '';
+}
+
+function extractYouTubeStartTime(url) {
+  if (!url) return 0;
+  const str = String(url);
+  const match = str.match(/[?&]t=([0-9]+)s?/) || str.match(/[?&]start=([0-9]+)/);
+  if (match) {
+    return parseInt(match[1], 10) || 0;
+  }
+  return 0;
+}
+
+function getMediaSettings() {
+  try {
+    if (fs.existsSync(MEDIA_FILE)) {
+      const raw = fs.readFileSync(MEDIA_FILE, 'utf-8');
+      const data = JSON.parse(raw);
+      if (data && data.hero) {
+        return {
+          hero: { ...defaultMedia.hero, ...data.hero },
+          short: { ...defaultMedia.short, ...(data.short || {}) }
+        };
+      }
+    }
+  } catch (e) {
+    console.error('Failed to read media settings:', e.message);
+  }
+  saveMediaSettings(defaultMedia);
+  return defaultMedia;
+}
+
+function saveMediaSettings(data) {
+  try {
+    const dir = path.dirname(MEDIA_FILE);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(MEDIA_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (e) {
+    console.error('Failed to write media settings:', e.message);
+  }
+}
+
+let mediaSettings = getMediaSettings();
+
+const REVIEWS_FILE = path.join(__dirname, 'data/reviews.json');
+const defaultReviews = [
   {
     id: 1,
     reviewer_name: 'Wanjiku M.',
     caption: '“The vibe at 1.0 was unmatched. Can’t wait for Ambũi!”',
     video_url: 'https://www.youtube.com/watch?v=cCo4F36en7E',
+    poster_url: 'https://img.youtube.com/vi/cCo4F36en7E/hqdefault.jpg',
     video_path: '',
     is_published: 1,
     sort_order: 1
@@ -151,11 +239,39 @@ const reviews = [
     reviewer_name: 'Kevin K.',
     caption: '“The food, the culture, the energy. Counting down the days!”',
     video_url: 'https://www.youtube.com/watch?v=f3LodYambh8',
+    poster_url: 'https://img.youtube.com/vi/f3LodYambh8/hqdefault.jpg',
     video_path: '',
     is_published: 1,
     sort_order: 2
   }
 ];
+
+function getReviews() {
+  try {
+    if (fs.existsSync(REVIEWS_FILE)) {
+      const raw = fs.readFileSync(REVIEWS_FILE, 'utf-8');
+      const data = JSON.parse(raw);
+      if (Array.isArray(data) && data.length > 0) {
+        return data;
+      }
+    }
+  } catch (e) {
+    console.error('Failed to read reviews.json:', e.message);
+  }
+  return defaultReviews;
+}
+
+function saveReviews(reviewsList) {
+  try {
+    const dir = path.dirname(REVIEWS_FILE);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(REVIEWS_FILE, JSON.stringify(reviewsList, null, 2), 'utf-8');
+  } catch (e) {
+    console.error('Failed to write reviews.json:', e.message);
+  }
+}
+
+let reviews = getReviews();
 
 const orders = [];
 
@@ -188,21 +304,34 @@ app.get('/api/products', (req, res) => {
 });
 
 app.get('/api/reviews', (req, res) => {
-  res.json(reviews.filter(r => r.is_published));
+  const currentReviews = getReviews();
+  res.json(currentReviews.filter(r => r.is_published));
 });
 
 // Main landing page (Wendo 2.0)
 app.get('/', (req, res) => {
-  res.render('index', {
-    products: products.sort((a, b) => a.sort_order - b.sort_order),
-    reviews: reviews.filter(r => r.is_published).sort((a, b) => a.sort_order - b.sort_order),
-    formatPrice,
-    youtubeEmbedUrl
-  });
+  try {
+    const currentReviews = getReviews();
+    res.render('index', {
+      products: products.sort((a, b) => a.sort_order - b.sort_order),
+      reviews: currentReviews.filter(r => r.is_published).sort((a, b) => a.sort_order - b.sort_order),
+      media: mediaSettings,
+      formatPrice,
+      youtubeEmbedUrl
+    });
+  } catch (err) {
+    console.error('Error rendering homepage:', err);
+    res.redirect('/');
+  }
 });
 
 app.get('/index.php', (req, res) => {
   res.redirect('/');
+});
+
+// Media JSON API
+app.get('/api/media', (req, res) => {
+  res.json(mediaSettings);
 });
 
 // Recap page (Wendo 1.0)
@@ -210,15 +339,21 @@ app.get('/recap.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/recap.html'));
 });
 
-// Pesapal checkout flow
+// Pesapal checkout flow (redirects to homepage on invalid product or error)
 app.get('/pesapal/initiate-payment.php', (req, res) => {
-  const productId = parseInt(req.query.product_id, 10);
-  const product = products.find(p => p.id === productId) || products[0];
-
-  res.render('checkout', {
-    product,
-    formatPrice
-  });
+  try {
+    const productId = parseInt(req.query.product_id, 10);
+    const product = products.find(p => p.id === productId);
+    if (!product) {
+      return res.redirect('/');
+    }
+    res.render('checkout', {
+      product,
+      formatPrice
+    });
+  } catch (e) {
+    res.redirect('/');
+  }
 });
 
 app.post('/pesapal/process-order', (req, res) => {
@@ -264,13 +399,113 @@ app.get('/api/products/:id', (req, res) => {
 app.get(['/admin', '/admin/dashboard.php'], (req, res) => {
   res.render('admin', {
     products,
-    reviews,
+    reviews: getReviews(),
     orders,
+    media: mediaSettings,
     formatPrice,
     editId: req.query.edit || '',
     saved: req.query.saved || false,
-    deleted: req.query.deleted || false
+    media_saved: req.query.media_saved || false,
+    deleted: req.query.deleted || false,
+    error: req.query.error || ''
   });
+});
+
+// Update Media Playing & Reviews (Unified Media Control Panel)
+app.post('/admin/media/save', (req, res) => {
+  try {
+    const {
+      hero_url, hero_title, hero_start, hero_poster, hero_caption,
+      short_url, short_title, short_poster, short_caption,
+      reviews_json
+    } = req.body;
+
+    const heroId = extractYouTubeId(hero_url) || mediaSettings.hero.video_id;
+    const heroStartSeconds = (hero_start !== undefined && hero_start !== '') ? parseInt(hero_start, 10) : extractYouTubeStartTime(hero_url);
+    const heroPoster = (hero_poster && hero_poster.trim()) ? hero_poster.trim() : `https://img.youtube.com/vi/${heroId}/hqdefault.jpg`;
+
+    const shortId = extractYouTubeId(short_url) || mediaSettings.short.video_id;
+    const shortPoster = (short_poster && short_poster.trim()) ? short_poster.trim() : `https://img.youtube.com/vi/${shortId}/hqdefault.jpg`;
+
+    mediaSettings = {
+      hero: {
+        url: hero_url ? hero_url.trim() : mediaSettings.hero.url,
+        video_id: heroId,
+        title: (hero_title !== undefined && hero_title.trim()) ? hero_title.trim() : mediaSettings.hero.title,
+        start_seconds: isNaN(heroStartSeconds) ? 0 : heroStartSeconds,
+        poster_url: heroPoster,
+        caption: (hero_caption !== undefined && hero_caption.trim()) ? hero_caption.trim() : mediaSettings.hero.caption
+      },
+      short: {
+        url: short_url ? short_url.trim() : mediaSettings.short.url,
+        video_id: shortId,
+        title: (short_title !== undefined && short_title.trim()) ? short_title.trim() : mediaSettings.short.title,
+        poster_url: shortPoster,
+        caption: (short_caption !== undefined && short_caption.trim()) ? short_caption.trim() : mediaSettings.short.caption
+      }
+    };
+
+    saveMediaSettings(mediaSettings);
+
+    // Save reviews if provided in body
+    if (reviews_json) {
+      try {
+        const parsed = typeof reviews_json === 'string' ? JSON.parse(reviews_json) : reviews_json;
+        if (Array.isArray(parsed)) {
+          reviews = parsed.map((r, i) => {
+            const vidUrl = r.video_url ? String(r.video_url).trim() : '';
+            const vidId = extractYouTubeId(vidUrl);
+            const poster = (r.poster_url && r.poster_url.trim()) 
+              ? r.poster_url.trim() 
+              : (vidId ? `https://img.youtube.com/vi/${vidId}/hqdefault.jpg` : '');
+            return {
+              id: Number(r.id) || (i + 1),
+              reviewer_name: r.reviewer_name ? String(r.reviewer_name).trim() : `Reviewer ${i + 1}`,
+              caption: r.caption ? String(r.caption).trim() : '',
+              video_url: vidUrl,
+              poster_url: poster,
+              video_path: r.video_path || '',
+              is_published: (r.is_published === 1 || r.is_published === '1' || r.is_published === true) ? 1 : 0,
+              sort_order: Number(r.sort_order) || (i + 1)
+            };
+          });
+          saveReviews(reviews);
+        }
+      } catch (err) {
+        console.error('Error parsing reviews_json:', err.message);
+      }
+    } else if (Array.isArray(req.body.reviews)) {
+      reviews = req.body.reviews.map((r, i) => {
+        const vidUrl = r.video_url ? String(r.video_url).trim() : '';
+        const vidId = extractYouTubeId(vidUrl);
+        const poster = (r.poster_url && r.poster_url.trim()) 
+          ? r.poster_url.trim() 
+          : (vidId ? `https://img.youtube.com/vi/${vidId}/hqdefault.jpg` : '');
+        return {
+          id: Number(r.id) || (i + 1),
+          reviewer_name: r.reviewer_name ? String(r.reviewer_name).trim() : `Reviewer ${i + 1}`,
+          caption: r.caption ? String(r.caption).trim() : '',
+          video_url: vidUrl,
+          poster_url: poster,
+          video_path: r.video_path || '',
+          is_published: (r.is_published === 1 || r.is_published === '1' || r.is_published === true) ? 1 : 0,
+          sort_order: Number(r.sort_order) || (i + 1)
+        };
+      });
+      saveReviews(reviews);
+    }
+
+    if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json')) || req.is('json')) {
+      return res.json({ success: true, media: mediaSettings, reviews });
+    }
+    return res.redirect('/admin/dashboard.php?media_saved=1#media-card');
+  } catch (err) {
+    console.error('Error saving media settings:', err.message);
+    if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+      return res.status(500).json({ success: false, error: err.message });
+    }
+    return res.redirect('/admin/dashboard.php?error=' + encodeURIComponent('Failed to update media settings'));
+  }
 });
 
 // Async Image Upload endpoint for product modal (accepts single or multiple files, any field name)
@@ -301,84 +536,96 @@ app.post(['/admin/api/upload-image', '/api/upload-image', '/admin/upload-image']
 });
 
 // Save or Update Product (with image upload, arrangement/main selection, and deletion)
-app.post('/admin/products/save', upload.any(), (req, res) => {
-  const { id, name, category, price_kes, description, sizes, is_available, existing_images, image_preset } = req.body;
-  const prodId = id ? parseInt(id, 10) : null;
-  const price = parseFloat(price_kes) || 0;
-  const available = (is_available === '1' || is_available === 'on' || is_available === 1) ? 1 : 0;
+app.post('/admin/products/save', (req, res) => {
+  upload.any()(req, res, (err) => {
+    if (err) {
+      console.error('Multer upload error in /admin/products/save:', err.message);
+      return res.redirect('/admin/dashboard.php?error=' + encodeURIComponent(err.message || 'Error processing uploaded images'));
+    }
 
-  // Parse existing images array (already arranged and with deleted ones removed by client)
-  let finalImages = [];
-  if (existing_images) {
     try {
-      const parsed = JSON.parse(existing_images);
-      if (Array.isArray(parsed)) {
-        finalImages = parsed.filter(p => typeof p === 'string' && p.trim().length > 0);
+      const { id, name, category, price_kes, description, sizes, is_available, existing_images, image_preset } = req.body;
+      const prodId = id ? parseInt(id, 10) : null;
+      const price = parseFloat(price_kes) || 0;
+      const available = (is_available === '1' || is_available === 'on' || is_available === 1) ? 1 : 0;
+
+      // Parse existing images array (already arranged and with deleted ones removed by client)
+      let finalImages = [];
+      if (existing_images) {
+        try {
+          const parsed = JSON.parse(existing_images);
+          if (Array.isArray(parsed)) {
+            finalImages = parsed.filter(p => typeof p === 'string' && p.trim().length > 0);
+          }
+        } catch (e) {
+          console.error('Failed to parse existing_images:', e.message);
+        }
       }
-    } catch (e) {
-      console.error('Failed to parse existing_images:', e.message);
-    }
-  }
 
-  // Convert any Base64 Data URL images into real upload files
-  finalImages = finalImages.map(img => {
-    if (typeof img === 'string' && img.startsWith('data:image/')) {
-      return saveBase64Image(img);
+      // Convert any Base64 Data URL images into real upload files
+      finalImages = finalImages.map(img => {
+        if (typeof img === 'string' && img.startsWith('data:image/')) {
+          return saveBase64Image(img);
+        }
+        return img;
+      });
+
+      // If preset image was selected and not already in finalImages
+      if (image_preset && image_preset.trim() && !finalImages.includes(image_preset.trim())) {
+        finalImages.push(image_preset.trim());
+      }
+
+      // If any new files were uploaded with the form submission, append them
+      if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+        req.files.forEach(file => {
+          finalImages.push('/uploads/' + file.filename);
+        });
+      }
+
+      // Ensure fallback image if none remaining
+      if (finalImages.length === 0) {
+        finalImages = ['/assets/merch-tee.jpg'];
+      }
+
+      // The first image in the arranged array is the Main Cover Image
+      const mainImage = finalImages[0];
+
+      if (prodId) {
+        const existing = products.find(p => p.id === prodId);
+        if (existing) {
+          existing.name = (name || '').trim() || existing.name;
+          existing.category = (category || '').trim() || existing.category;
+          existing.price_kes = price;
+          existing.description = (description || '').trim();
+          existing.sizes = (sizes || '').trim();
+          existing.is_available = available;
+          existing.image_path = mainImage;
+          existing.images = finalImages;
+        }
+      } else {
+        const nextId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+        const newProduct = {
+          id: nextId,
+          name: (name || 'New Wendo Item').trim(),
+          category: (category || 'Drop 01 · Apparel').trim(),
+          price_kes: price,
+          description: (description || '').trim(),
+          sizes: (sizes || 'One Size').trim(),
+          is_available: available,
+          image_path: mainImage,
+          images: finalImages,
+          sort_order: products.length + 1
+        };
+        products.push(newProduct);
+      }
+
+      saveProducts(products);
+      res.redirect('/admin/dashboard.php?saved=1');
+    } catch (saveErr) {
+      console.error('Product save error:', saveErr);
+      res.redirect('/admin/dashboard.php?error=' + encodeURIComponent('Could not save product: ' + saveErr.message));
     }
-    return img;
   });
-
-  // If preset image was selected and not already in finalImages
-  if (image_preset && image_preset.trim() && !finalImages.includes(image_preset.trim())) {
-    finalImages.push(image_preset.trim());
-  }
-
-  // If any new files were uploaded with the form submission, append them
-  if (req.files && Array.isArray(req.files) && req.files.length > 0) {
-    req.files.forEach(file => {
-      finalImages.push('/uploads/' + file.filename);
-    });
-  }
-
-  // Ensure fallback image if none remaining
-  if (finalImages.length === 0) {
-    finalImages = ['/assets/merch-tee.jpg'];
-  }
-
-  // The first image in the arranged array is the Main Cover Image
-  const mainImage = finalImages[0];
-
-  if (prodId) {
-    const existing = products.find(p => p.id === prodId);
-    if (existing) {
-      existing.name = (name || '').trim() || existing.name;
-      existing.category = (category || '').trim() || existing.category;
-      existing.price_kes = price;
-      existing.description = (description || '').trim();
-      existing.sizes = (sizes || '').trim();
-      existing.is_available = available;
-      existing.image_path = mainImage;
-      existing.images = finalImages;
-    }
-  } else {
-    const nextId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-    const newProduct = {
-      id: nextId,
-      name: (name || 'New Wendo Item').trim(),
-      category: (category || 'Drop 01 · Apparel').trim(),
-      price_kes: price,
-      description: (description || '').trim(),
-      sizes: (sizes || 'One Size').trim(),
-      is_available: available,
-      image_path: mainImage,
-      images: finalImages,
-      sort_order: products.length + 1
-    };
-    products.push(newProduct);
-  }
-
-  saveProducts(products);
-  res.redirect('/admin/dashboard.php?saved=1');
 });
 
 // Delete Product
@@ -403,16 +650,25 @@ app.get('/install.php', (req, res) => {
   res.render('install');
 });
 
-// API Error Handler - guarantees JSON responses for API routes instead of HTML error pages
+// Error Handler - If there is an error on the page redirect to homepage
 app.use((err, req, res, next) => {
+  console.error('Handled application error:', err.message || err);
   if (req.path.startsWith('/admin/api') || req.path.startsWith('/api') || req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
-    console.error('API Error:', err.message);
     return res.status(err.status || 500).json({
       success: false,
       error: err.message || 'An unexpected error occurred'
     });
   }
-  next(err);
+  // If there is an error on the page, redirect to homepage
+  res.redirect('/');
+});
+
+// 404 Handler - redirect any unknown page route to homepage
+app.use((req, res) => {
+  if (req.path.startsWith('/admin/api') || req.path.startsWith('/api') || req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+    return res.status(404).json({ error: 'Endpoint not found' });
+  }
+  res.redirect('/');
 });
 
 // Start server
