@@ -3,8 +3,8 @@
     "id": 1,
     "reviewer_name": "Wanjiku M.",
     "caption": "“The vibe at 1.0 was unmatched. Can’t wait for Ambũi!”",
-    "video_url": "https://www.youtube.com/watch?v=cCo4F36en7E",
-    "poster_url": "https://img.youtube.com/vi/cCo4F36en7E/hqdefault.jpg",
+    "video_url": "https://www.youtube.com/shorts/LVq6OtIhQDA",
+    "poster_url": "https://img.youtube.com/vi/LVq6OtIhQDA/hqdefault.jpg",
     "video_path": "",
     "is_published": 1,
     "sort_order": 1
@@ -13,10 +13,20 @@
     "id": 2,
     "reviewer_name": "Kevin K.",
     "caption": "“The food, the culture, the energy. Counting down the days!”",
-    "video_url": "https://www.youtube.com/watch?v=f3LodYambh8",
-    "poster_url": "https://img.youtube.com/vi/f3LodYambh8/hqdefault.jpg",
+    "video_url": "https://www.youtube.com/shorts/cu_XyFpe0iU",
+    "poster_url": "https://img.youtube.com/vi/cu_XyFpe0iU/hqdefault.jpg",
     "video_path": "",
     "is_published": 1,
     "sort_order": 2
+  },
+  {
+    "id": 1789043729459,
+    "reviewer_name": "Guest Reviewer",
+    "caption": "“Can’t wait for Wendo 2.0!”",
+    "video_url": "https://www.youtube.com/shorts/SqtjKgvBs5M",
+    "poster_url": "https://img.youtube.com/vi/SqtjKgvBs5M/hqdefault.jpg",
+    "video_path": "",
+    "is_published": 1,
+    "sort_order": 3
   }
 ]

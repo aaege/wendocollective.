@@ -334,14 +334,162 @@
   .btn:disabled{ opacity:.5; cursor:not-allowed; transform:none !important; }
 
   /* ---- reviews ---- */
-  .reviews-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1.5rem; }
-  .review-card{ background:var(--surface); border:1px solid var(--line-strong); overflow:hidden; }
-  .review-media{ aspect-ratio:9/16; background:#000; position:relative; }
-  .review-media video, .review-media iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; object-fit:cover; }
-  .review-media a.review-link{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#fff; font-family:'IBM Plex Mono',monospace; font-size:.85rem; text-decoration:underline; }
-  .review-body{ padding:1rem 1.2rem 1.2rem; }
-  .review-body h3{ margin:0 0 .3rem; font-size:1.05rem; }
-  .review-body p{ margin:0; color:var(--muted); font-size:.88rem; }
+  #reviews {
+    padding-top: clamp(2.5rem, 5vw, 4rem);
+    padding-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+  }
+  .review-card {
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+  }
+  .review-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px rgba(36, 18, 9, 0.2);
+  }
+  .review-media {
+    aspect-ratio: 9/16;
+    background: #000;
+    position: relative;
+    overflow: hidden;
+  }
+  .review-media video, .review-media iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    object-fit: cover;
+  }
+  .review-media a.review-link {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+    text-decoration: underline;
+  }
+  .review-body {
+    padding: 1rem 1.2rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .review-body h3 {
+    margin: 0 0 0.35rem;
+    font-size: 1.05rem;
+    color: var(--text);
+  }
+  .review-body p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+  .reviews-mobile-hint {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    margin: 0.85rem 0 0;
+  }
+  .reviews-mobile-hint span {
+    color: var(--marigold-text);
+  }
+
+  /* Mobile layout & touch optimization for #reviews */
+  @media (max-width: 680px) {
+    #reviews {
+      padding-top: 2.25rem;
+      padding-bottom: 2.5rem;
+    }
+    #reviews .section-head {
+      margin-bottom: 1.25rem;
+    }
+    #reviews .reviews-grid {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      gap: 1rem;
+      margin: 0 calc(-1 * clamp(1.25rem, 4vw, 2rem));
+      padding: 0.35rem clamp(1.25rem, 4vw, 2rem) 1.25rem;
+      scrollbar-width: thin;
+      scrollbar-color: var(--line-strong) transparent;
+      overscroll-behavior-x: contain;
+    }
+    #reviews .reviews-grid::-webkit-scrollbar {
+      height: 4px;
+    }
+    #reviews .reviews-grid::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    #reviews .reviews-grid::-webkit-scrollbar-thumb {
+      background: var(--line-strong);
+      border-radius: 2px;
+    }
+    #reviews .review-card {
+      flex: 0 0 clamp(230px, 74vw, 280px);
+      scroll-snap-align: start;
+      scroll-snap-stop: normal;
+      box-shadow: 0 8px 20px rgba(36, 18, 9, 0.12);
+    }
+    #reviews .review-card:only-child {
+      margin: 0 auto;
+      max-width: 290px;
+    }
+    #reviews .review-media {
+      aspect-ratio: 9/16;
+      max-height: clamp(380px, 58vh, 440px);
+    }
+    #reviews .video-play {
+      width: 54px;
+      height: 54px;
+      font-size: 1.15rem;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+    }
+    #reviews .video-play:active {
+      transform: translate(-50%, -50%) scale(0.9);
+      background: var(--burgundy);
+    }
+    #reviews .review-body {
+      padding: 0.85rem 1rem 1.1rem;
+    }
+    #reviews .review-body h3 {
+      font-size: 0.98rem;
+    }
+    #reviews .review-body p {
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+    .reviews-mobile-hint {
+      display: flex;
+    }
+  }
+
+  @media (max-width: 380px) {
+    #reviews .review-card {
+      flex: 0 0 82vw;
+    }
+    #reviews .review-media {
+      max-height: 380px;
+    }
+  }
 
   footer{ padding:2.5rem 0 3rem; text-align:center; }
   .say-hello{ font-family:'Luckiest Guy',sans-serif; font-size:1.6rem; color:var(--burgundy); margin:0 0 1rem; }
@@ -720,22 +868,24 @@
       <p>Real reactions from the people who were actually there at Wendo 1.0.</p>
     </div>
     <div class="reviews-grid reveal">
-      <% reviews.forEach(function(r) { %>
+      <% reviews.forEach(function(r) { 
+        const effectiveVideoUrl = r.video_url || ((r.poster_url && r.poster_url.match(/(?:youtu\.be\/|youtube\.com)/)) ? r.poster_url : '');
+        const vidMatch = (effectiveVideoUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/|watch\?.+&v=))([\w-]{11})/) || [])[1] || '';
+        const effectivePoster = (r.poster_url && !r.poster_url.includes('youtube.com/shorts')) 
+          ? r.poster_url 
+          : (vidMatch ? 'https://img.youtube.com/vi/' + vidMatch + '/hqdefault.jpg' : '');
+      %>
       <div class="review-card">
         <div class="review-media">
           <% if (r.video_path) { %>
             <video src="<%= r.video_path %>" controls preload="metadata"></video>
-          <% } else if (r.video_url && youtubeEmbedUrl(r.video_url)) { %>
-            <% if (r.poster_url) { %>
-              <div class="short-frame" data-video-id="<%= (r.video_url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/|watch\?.+&v=))([\w-]{11})/) || [])[1] || '' %>" data-video-title="Review from <%= r.reviewer_name %>" style="position:absolute; inset:0; width:100%; height:100%;">
-                <img class="video-poster" src="<%= r.poster_url %>" alt="<%= r.reviewer_name %> video review" loading="lazy" style="width:100%; height:100%; object-fit:cover;">
-                <button type="button" class="video-play" aria-label="Play video review from <%= r.reviewer_name %>">▶</button>
-              </div>
-            <% } else { %>
-              <iframe src="<%= youtubeEmbedUrl(r.video_url) %>" title="Review from <%= r.reviewer_name %>" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"></iframe>
-            <% } %>
-          <% } else if (r.video_url) { %>
-            <a class="review-link" href="<%= r.video_url %>" target="_blank" rel="noopener">Watch video →</a>
+          <% } else if (effectiveVideoUrl && (youtubeEmbedUrl(effectiveVideoUrl) || vidMatch)) { %>
+            <div class="short-frame" data-video-id="<%= vidMatch %>" data-video-title="Review from <%= r.reviewer_name %>" style="position:absolute; inset:0; width:100%; height:100%;">
+              <img class="video-poster" src="<%= effectivePoster || ('https://img.youtube.com/vi/' + vidMatch + '/hqdefault.jpg') %>" alt="<%= r.reviewer_name %> video review" loading="lazy" style="width:100%; height:100%; object-fit:cover;">
+              <button type="button" class="video-play" aria-label="Play video review from <%= r.reviewer_name %>">▶</button>
+            </div>
+          <% } else if (effectiveVideoUrl) { %>
+            <a class="review-link" href="<%= effectiveVideoUrl %>" target="_blank" rel="noopener">Watch video →</a>
           <% } %>
         </div>
         <div class="review-body">
@@ -745,6 +895,11 @@
       </div>
       <% }); %>
     </div>
+    <% if (reviews.length > 1) { %>
+    <p class="reviews-mobile-hint mono" aria-hidden="true">
+      <span>←</span> Swipe horizontally to explore reviews <span>→</span>
+    </p>
+    <% } %>
   </section>
   <% } %>
 
@@ -876,8 +1031,8 @@
       if(isDesktop){
         load();
       } else {
-        const btn = el.querySelector('.video-play');
-        if(btn) btn.addEventListener('click', load, { once:true });
+        el.style.cursor = 'pointer';
+        el.addEventListener('click', load, { once:true });
       }
     });
   })();
